@@ -1,5 +1,7 @@
 const xlsx = require('xlsx');
-require('dotenv').config();
+const PATCH_GV = process.env.PATCH_GV || '../upload/CBGD.xls';
+const PATCH_TKB = process.env.PATCH_GV || '../upload/tkb.xlsx';
+const PATCH_CONVERT = process.env.PATCH_GV || '../upload/convert.xls';
 
 convertToOjectGv = (opject) => {
     return {
@@ -20,8 +22,8 @@ convertDateMysql = (arry) => {
 convertToOjectTkb = (opject) => {
     var ngay_bd, ngay_kt, ma_gv;
     if (opject.f_tghoc == null) {
-        ngay_bd = null;
-        ngay_kt = null;
+        ngay_bd = "0000-00-00";
+        ngay_kt = "0000-00-00";
     } else {
         const date = opject.f_tghoc.split('-');
         ngay_bd = convertDateMysql(date[0]);
@@ -75,13 +77,13 @@ convertPhong = (opject) => {
 }
 data_gv = () => {
     //sửa định dạng dữ liệu
-    const workbook = xlsx.readFile(process.env.PATH_GV);
+    const workbook = xlsx.readFile(PATCH_GV);
     let sheetName = workbook.SheetNames[0];
     const newWorkbook = workbook;
     newWorkbook.Sheets[sheetName]['A1'].v = "msgv";
-    xlsx.writeFile(workbook, process.env.PATH_CONVERT);
+    xlsx.writeFile(workbook, PATCH_CONVERT);
     //đọc file convert data
-    const dataTable = xlsx.readFile(process.env.PATH_CONVERT, { cellDates: true });
+    const dataTable = xlsx.readFile(PATCH_CONVERT, { cellDates: true });
     const netData = dataTable.Sheets[sheetName];
     const jsonData = xlsx.utils.sheet_to_json(netData);
 
@@ -95,7 +97,7 @@ data_gv = () => {
 }
 
 data_tkb = () => {
-    const workbook = xlsx.readFile(process.env.PATH_TKB);
+    const workbook = xlsx.readFile(PATCH_TKB);
     let sheetName = workbook.SheetNames[0];
     const netData = workbook.Sheets[sheetName];
     const jsonData = xlsx.utils.sheet_to_json(netData);
@@ -123,7 +125,7 @@ data_phong = () => {
     return data_phong;
 }
 // console.log(typeof(data_phong()[0]))
-console.log(data_gv());
+//console.log(data_phong());
 
 
 

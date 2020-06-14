@@ -1,16 +1,23 @@
 const mysql = require('mysql');
 
-const USER = process.env.FIRA_DB_USER || 'fira';
-const HOST = process.env.FIRA_DB_HOST || 'localhost';
-const PASSWORD = process.env.FIRA_DB_PSW || 'fira';
-const DATABASE = process.env.FIRA_DB_NAME || 'fira-remind';
+const USER = process.env.FIRA_DB_USER || 'reminddb';
+const HOST = process.env.FIRA_DB_HOST || 'db4free.net';
+const PASSWORD = process.env.FIRA_DB_PSW || 'reminddb';
 
-function createConnection() {
+function createConnection(databaseName) {
   return mysql.createConnection({
     host: HOST,
     user: USER,
     password: PASSWORD,
-    database: DATABASE,
+    database: databaseName,
+  });
+}
+
+function createConnectionNoDatabase() {
+  return mysql.createConnection({
+    host: HOST,
+    user: USER,
+    password: PASSWORD,
   });
 }
 
@@ -28,4 +35,4 @@ function disconnect(connection) {
   console.log('db disconnected');
 }
 
-module.exports = { createConnection, connect, disconnect };
+module.exports = { createConnection, createConnectionNoDatabase, connect, disconnect };
