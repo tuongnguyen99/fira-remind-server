@@ -25,6 +25,7 @@ function connect(connection) {
 
 function disconnect(connection) {
   connection.end();
+  console.log('db disconnected');
 }
 
 module.exports = { createConnection, connect, disconnect };

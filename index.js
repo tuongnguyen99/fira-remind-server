@@ -4,6 +4,7 @@ const cors = require('cors');
 const uploadRoutes = require('./routes/uploadRoutes');
 const excelRouter = require('./routes/excelRoutes');
 const roomRoute = require('./routes/roomRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 var bodyParser = require('body-parser');
 
@@ -16,6 +17,7 @@ app.use(bodyParser.json());
 app.use('/upload', uploadRoutes);
 app.use('/excel', excelRouter);
 app.use('/room', roomRoute);
+app.use('/user', userRoutes);
 
 app.listen(PORT, () => {
   console.log(`app listening on port ${PORT}`);
