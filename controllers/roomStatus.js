@@ -1,4 +1,4 @@
-const data = require('./readFileEcxel');
+const data = require('../nitu/readFileEcxel');
 roomUse = (day)=>{
     const tkb = data.data_tkb();
     const p_sdung = new Array();

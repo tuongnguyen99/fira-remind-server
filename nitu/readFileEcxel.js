@@ -1,7 +1,5 @@
 const xlsx = require('xlsx');
-const pathTkb = "./upload/Thời khóa biểu học kỳ 1 năm học 2019-20202.xlsx";
-const pathGv = "./upload/CBGD.xls";
-
+require('dotenv').config();
 
 convertToOjectGv = (opject) => {
     return {
@@ -77,13 +75,13 @@ convertPhong = (opject) => {
 }
 data_gv = () => {
     //sửa định dạng dữ liệu
-    const workbook = xlsx.readFile(pathGv);
+    const workbook = xlsx.readFile(process.env.PATH_GV);
     let sheetName = workbook.SheetNames[0];
     const newWorkbook = workbook;
     newWorkbook.Sheets[sheetName]['A1'].v = "msgv";
-    xlsx.writeFile(workbook, './upload/convert.xls');
+    xlsx.writeFile(workbook, process.env.PATH_CONVERT);
     //đọc file convert data
-    const dataTable = xlsx.readFile('./upload/convert.xls', { cellDates: true });
+    const dataTable = xlsx.readFile(process.env.PATH_CONVERT, { cellDates: true });
     const netData = dataTable.Sheets[sheetName];
     const jsonData = xlsx.utils.sheet_to_json(netData);
 
@@ -97,7 +95,7 @@ data_gv = () => {
 }
 
 data_tkb = () => {
-    const workbook = xlsx.readFile(pathTkb);
+    const workbook = xlsx.readFile(process.env.PATH_TKB);
     let sheetName = workbook.SheetNames[0];
     const netData = workbook.Sheets[sheetName];
     const jsonData = xlsx.utils.sheet_to_json(netData);
@@ -125,7 +123,7 @@ data_phong = () => {
     return data_phong;
 }
 // console.log(typeof(data_phong()[0]))
-//console.log(data_gv());
+console.log(data_gv());
 
 
 
