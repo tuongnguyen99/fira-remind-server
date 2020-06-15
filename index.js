@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const uploadRoutes = require('./routes/uploadRoutes');
-const excelRouter = require('./routes/excelRoutes');
+const dataRoutes = require('./routes/dataRoute');
 const roomRoute = require('./routes/roomRoutes');
 const userRoutes = require('./routes/userRoutes');
 
@@ -15,8 +15,8 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
 app.use('/upload', uploadRoutes);
-app.use('/excel', excelRouter);
-app.use('/room', roomRoute);
+app.use('/data', dataRoutes);
+//app.use('/room', roomRoute);
 app.use('/user', userRoutes);
 
 app.listen(PORT, () => {

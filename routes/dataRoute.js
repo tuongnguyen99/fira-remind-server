@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const excel = require('../controllers/readFileEcxel');
-
+const data = require('../controllers/dataController');
 
 router.get('/teacher', (req, res)=>{
     const ds_gvien = excel.data_gv();
@@ -12,8 +11,7 @@ router.get('/schedule', (req, res)=>{
     !tkb ? res.send('err'):res.send(tkb);
 })
 router.get('/room', (req, res)=>{
-    const phong = excel.data_p();
-    !phong ? res.send('err'):res.send(phong);
+    data.listRoom(req, res);
 })
 
 module.exports = router;

@@ -7,7 +7,7 @@ function creatDatabase(name) {
     db.connect(pool);
     pool.query("CREATE DATABASE IF NOT EXISTS " + name, (err, result, cb) => {
         if (err) throw err;
-        console.log("o");
+        console.log("đã tạo database "+name);
     });
     db.disconnect(pool);
 }
@@ -20,9 +20,10 @@ function creatTable(sql) {
     });
     db.disconnect(pool);
 }
-function importValue() {
-    const pool = db.createConnection(DATABASE);
-    db.connect(pool);
+async function importValue() {
+    console.log("day")
+    const pool = await db.createConnection(DATABASE);
+    await db.connect(pool);
     const dataGv = data.data_gv()
     dataGv.forEach(element => {
         var sql = "INSERT INTO g_vien (m_gvien, t_gvien, n_sinh, khoa, t_do) VALUES ('"
@@ -56,18 +57,21 @@ function importValue() {
     });
     db.disconnect(pool);
 }
-function database() {
-    // const gv = "CREATE TABLE `remind_db`.`g_vien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_gvien` TEXT NOT NULL , `t_gvien` VARCHAR(50) NOT NULL , `n_sinh` TEXT NOT NULL , `khoa` VARCHAR(100) NOT NULL , `t_do` VARCHAR(20) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
-    // const tkb = "CREATE TABLE `remind_db`.`tkb` ( `id` INT NOT NULL AUTO_INCREMENT , `thu` INT NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(50) NOT NULL , `m_gvien` TEXT NOT NULL , `phong` TEXT NOT NULL , `lop` TEXT NOT NULL , `n_bdau` DATE NOT NULL , `n_kthuc` DATE NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
-    // const phong = "CREATE TABLE `remind_db`.`phong` ( `id` INT NOT NULL AUTO_INCREMENT , `t_phong` TEXT NOT NULL , `khu` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
-    // const token = "CREATE TABLE `remind_db`.`token_calendar` ( `id` INT NOT NULL AUTO_INCREMENT , `email` TEXT NOT NULL , `token` VARCHAR NOT NULL , `status` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
-    // const user = "CREATE TABLE `remind_db`.`user` ( `id` INT NOT NULL AUTO_INCREMENT , `username` TEXT NOT NULL , `password` TEXT NOT NULL , `type` TEXT NOT NULL , `status` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
-    // //creatDatabase(DATABASE);
-    // creatTable(gv);
-    // creatTable(tkb);
-    // creatTable(phong);
-    // creatTable(token);
-    // importValue();
+async function database() {
+    await creatDatabase(DATABASE);
+    const gv = "CREATE TABLE IF NOT EXISTS `remind_db`.`g_vien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_gvien` TEXT NOT NULL , `t_gvien` VARCHAR(50) NOT NULL , `n_sinh` TEXT NOT NULL , `khoa` VARCHAR(100) NOT NULL , `t_do` VARCHAR(20) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
+    const tkb = "CREATE TABLE IF NOT EXISTS `remind_db`.`tkb` ( `id` INT NOT NULL AUTO_INCREMENT , `thu` INT NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(50) NOT NULL , `m_gvien` TEXT NOT NULL , `phong` TEXT NOT NULL , `lop` TEXT NOT NULL , `n_bdau` DATE NOT NULL , `n_kthuc` DATE NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    const phong = "CREATE TABLE IF NOT EXISTS `remind_db`.`phong` ( `id` INT NOT NULL AUTO_INCREMENT , `t_phong` TEXT NOT NULL , `khu` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    const token = "CREATE TABLE IF NOT EXISTS `remind_db`.`token_calendar` ( `id` INT NOT NULL AUTO_INCREMENT , `email` TEXT NOT NULL , `token` TEXT NOT NULL , `status` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    const user = "CREATE TABLE IF NOT EXISTS `remind_db`.`user` ( `id` INT NOT NULL AUTO_INCREMENT , `username` TEXT NOT NULL , `password` TEXT NOT NULL , `type` TEXT NOT NULL , `status` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    //creatDatabase(DATABASE);
+    await creatTable(gv);
+    await creatTable(tkb);
+    await creatTable(phong);
+    await creatTable(token);
+    await creatTable(user);
+    await importValue();
 }
+
 database()
 module.exports = database;

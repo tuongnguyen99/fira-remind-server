@@ -1,8 +1,11 @@
 const mysql = require('mysql');
 
-const USER = process.env.FIRA_DB_USER || 'reminddb';
-const HOST = process.env.FIRA_DB_HOST || 'db4free.net';
-const PASSWORD = process.env.FIRA_DB_PSW || 'reminddb';
+// const USER = process.env.FIRA_DB_USER || 'reminddb';
+// const HOST = process.env.FIRA_DB_HOST || 'db4free.net';
+// const PASSWORD = process.env.FIRA_DB_PSW || 'reminddb';
+const USER = process.env.FIRA_DB_USER || 'root';
+const HOST = process.env.FIRA_DB_HOST || 'localhost';
+const PASSWORD = process.env.FIRA_DB_PSW || '';
 
 function createConnection(databaseName) {
   return mysql.createConnection({

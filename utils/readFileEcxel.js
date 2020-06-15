@@ -8,7 +8,6 @@ convertToOjectGv = (opject) => {
         m_gvien: opject.msgv,
         ten: opject.__EMPTY + ' ' + opject.__EMPTY_1,
         n_sinh: opject.__EMPTY_2,
-        //  phai: opject.__EMPTY_3,
         khoa: opject.__EMPTY_4,
         t_do: opject.__EMPTY_5
     }
@@ -77,7 +76,7 @@ convertPhong = (opject) => {
 }
 data_gv = () => {
     //sửa định dạng dữ liệu
-    const workbook = xlsx.readFile(PATCH_GV);
+    const workbook = xlsx.readFile(PATCH_GV, { cellDates: true });
     let sheetName = workbook.SheetNames[0];
     const newWorkbook = workbook;
     newWorkbook.Sheets[sheetName]['A1'].v = "msgv";
@@ -125,7 +124,7 @@ data_phong = () => {
     return data_phong;
 }
 // console.log(typeof(data_phong()[0]))
-//console.log(data_phong());
+//console.log(data_gv());
 
 
 
