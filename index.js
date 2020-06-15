@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use('/upload', uploadRoutes);
 app.use('/data', dataRoutes);
-//app.use('/room', roomRoute);
+app.use('/room', roomRoute);
 app.use('/user', userRoutes);
 
 app.listen(PORT, () => {

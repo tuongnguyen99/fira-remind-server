@@ -1,14 +1,31 @@
-const db = require('../db/db');
+const { createConnection } = require('../db/db');
+const DATABASE = process.env.DATABASENAME || 'remind_db'
+const cn = createConnection(DATABASE);
+
 
 function listRoom(req, res){
-    const pool = db.createConnection('remind_db');
-    db.connect(pool);
     const query = "select * from phong";
-    pool.query(query, (err, result)=>{
-        if(err) throw err
-        console.log(result);
+    cn.query(query, (err, result)=>{
+        if(err) return res.status(400).send(err.message);
+        res.send(result);
+    })
+}
+function listTeacher(res, res){
+    const query = "select * from g_vien";
+    cn.query(query, (err, result)=>{
+        if(err) return res.status(400).send(err.message);
+        res.send(result);
+    })
+}
+function listsChedule(res, res){
+    const query = "select * from tkb";
+    cn.query(query, (err, result)=>{
+        if(err) return res.status(400).send(err.message);
+        res.send(result);
     })
 }
 module.exports={
-    listRoom
+    listRoom,
+    listTeacher,
+    listsChedule
 };
