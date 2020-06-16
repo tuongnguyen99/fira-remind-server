@@ -5,7 +5,7 @@ const roomStatus = require('../controllers/roomController');
 router.get('/roomuse/:day', (req, res)=>{
     roomStatus.roomUse(req, res);
 })
-router.get('/emptyroom/:day', (req, res)=>{
+router.get('/emptyroom/:day',async (req, res)=>{
     roomStatus.emptyRoom(req, res);
 })
 
