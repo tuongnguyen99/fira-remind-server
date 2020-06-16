@@ -25,36 +25,36 @@ async function importValue() {
     const pool = await db.createConnection(DATABASE);
     await db.connect(pool);
     const dataGv = data.data_gv()
-    // dataGv.forEach(element => {
-    //     var sql = "INSERT INTO g_vien (m_gvien, t_gvien, n_sinh, khoa, t_do) VALUES ('"
-    //         + element.m_gvien + "','" + element.ten + "','" + element.n_sinh + "','"
-    //         + element.khoa + "','" + element.t_do + "')";
-    //     pool.query(sql, (err, result) => {
-    //         if (err) throw err;
-    //         console.log('successful');
-    //     })
-    // });
-    // const dataTkb = data.data_tkb();
-    // dataTkb.forEach(element => {
-    //     var sql = "INSERT INTO tkb (thu, t_bdau, s_tiet, m_mon, t_mon, m_gvien, phong, lop, n_bdau, n_kthuc) VALUES ('"
-    //         + element.thu + "', '" + element.t_bdau + "', '"
-    //         + element.s_tiet + "', '" + element.m_mon + "', '"
-    //         + element.t_mon + "', '" + element.m_gv + "', '"
-    //         + element.phong + "', '" + element.lop + "', '"
-    //         + element.n_bdau + "', '"+element.n_kthuc+"')";
-    //     pool.query(sql, (err, result) => {
-    //         if (err) throw err;
-    //         console.log('successful');
-    //     })
-    // });
-    // const dataPhong = data.data_phong();
-    // dataPhong.forEach(element => {
-    //     var sql = "INSERT INTO phong (t_phong, khu) VALUES ('" + element.t_phong+ "', '"+element.khu+"')";
-    //     pool.query(sql, (err, result) => {
-    //         if (err) throw err;
-    //         console.log('successful');
-    //     })
-    // });
+    dataGv.forEach(element => {
+        var sql = "INSERT INTO g_vien (m_gvien, t_gvien, n_sinh, khoa, t_do) VALUES ('"
+            + element.m_gvien + "','" + element.ten + "','" + element.n_sinh + "','"
+            + element.khoa + "','" + element.t_do + "')";
+        pool.query(sql, (err, result) => {
+            if (err) throw err;
+            console.log('successful');
+        })
+    });
+    const dataTkb = data.data_tkb();
+    dataTkb.forEach(element => {
+        var sql = "INSERT INTO tkb (thu, t_bdau, s_tiet, m_mon, t_mon, m_gvien, phong, lop, n_bdau, n_kthuc) VALUES ('"
+            + element.thu + "', '" + element.t_bdau + "', '"
+            + element.s_tiet + "', '" + element.m_mon + "', '"
+            + element.t_mon + "', '" + element.m_gv + "', '"
+            + element.phong + "', '" + element.lop + "', '"
+            + element.n_bdau + "', '"+element.n_kthuc+"')";
+        pool.query(sql, (err, result) => {
+            if (err) throw err;
+            console.log('successful');
+        })
+    });
+    const dataPhong = data.data_phong();
+    dataPhong.forEach(element => {
+        var sql = "INSERT INTO phong (t_phong, khu) VALUES ('" + element.t_phong+ "', '"+element.khu+"')";
+        pool.query(sql, (err, result) => {
+            if (err) throw err;
+            console.log('successful');
+        })
+    });
     db.disconnect(pool);
 }
 async function creatDatabaseUser(){
@@ -81,6 +81,7 @@ async function creatDatabaseUser(){
             console.log('successful');
         })
     })
+    db.disconnect(pool);
 }
 async function database() {
     //await creatDatabase(DATABASE);
@@ -96,7 +97,8 @@ async function database() {
     await creatTable(token);
     await creatTable(user);
     await importValue();
+    //await creatDatabaseUser()
 }
 
-creatDatabaseUser();
+database();
 module.exports = database;
