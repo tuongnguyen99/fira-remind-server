@@ -26,9 +26,9 @@ function createConnectionNoDatabase() {
 
 function connect(connection) {
   connection.connect((err) => {
-    if (err) {
-      throw new Error(err.message);
-    }
+    if (err) throw err//{
+    //   throw new Error(err.message);
+    // }
     console.log('db connected');
   });
 }
