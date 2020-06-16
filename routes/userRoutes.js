@@ -9,6 +9,6 @@ router.get('/getInfo', (req, res)=>{
   if(req.session.username){
     return res.send(req.session.username)
   }
-  res.send("chua dang nhap");
+  res.send("1");
 })
 module.exports = router;
