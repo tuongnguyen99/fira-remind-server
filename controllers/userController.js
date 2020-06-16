@@ -6,28 +6,25 @@ const cn = createConnection(DATABASE);
 
 const login = function login(req, res) {
   const { username, password } = req.body;
-  var convert;
-  if (password.length === 0) {
-    convert = null;
-  }
   const query = `SELECT * FROM user WHERE USERNAME = '${username}' LIMIT 1`;
-  console.log(query)
   cn.query(query, (err, results) => {
-    console.log(results[0]);
     if (err) return res.status(400).send(err.message);
-    if (results[0].type === "STUDENT") {
-      const user = results[0];
-      delete user.password;
-      res.send(user);
-    } else if (results.length === 0 || !compare(password, results[0].password)) {
-      return res.status(404).send({ message: 'user not found' });
+    if(results.length === 1){
+      if (results[0].type === "STUDENT") {
+        const user = results[0];
+        delete user.password;
+        res.send(user);
+      } else if (results.length === 0 || !compare(password, results[0].password)) {
+        return res.status(404).send({ message: 'user not found' });
+      }else{
+        const user = results[0];
+        delete user.password;
+        req.session.username = user.username;
+        res.send(user);
+      }
     }else{
-      const user = results[0];
-      delete user.password;
-      req.session.username = user.username;
-      res.send(user);
+      res.status(400).send({message:"khong ton tai"})
     }
-
   });
 };
 
