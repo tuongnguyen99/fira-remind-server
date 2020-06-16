@@ -55,6 +55,10 @@ async function importValue() {
     //         console.log('successful');
     //     })
     // });
+    db.disconnect(pool);
+}
+async function creatDatabaseUser(){
+    const dataGv = data.data_gv()
     const queryList = new Array();
     dataGv.map(element => {
         const m_gvien = String(element.m_gvien);
@@ -66,17 +70,17 @@ async function importValue() {
         }catch(err){
             console.log("loi")
         }
+    });
+    console.log(queryList);
+    const pool = await db.createConnection(DATABASE);
+    await db.connect(pool);
+    queryList.forEach(element=>{
+        console.log(element);
         pool.query(element, (err, result) => {
             if (err) console.log("loi");
             console.log('successful');
         })
-    });
-    // console.log(queryList);
-    // queryList.forEach(element=>{
-    //     console.log(element);
-
-    // })
-    db.disconnect(pool);
+    })
 }
 async function database() {
     //await creatDatabase(DATABASE);
@@ -94,5 +98,5 @@ async function database() {
     await importValue();
 }
 
-importValue()
+creatDatabaseUser();
 module.exports = database;
