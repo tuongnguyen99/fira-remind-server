@@ -5,23 +5,23 @@ const cn = createConnection(DATABASE);
 async function roomUse(req, res) {
     var day = req.params;
     day = day.day.replace(/-/g, "/");
-    const p_sdung = await dataUseRoom(day, req, res);
+    const p_sdung = await dataUseRoom(day, res);
     res.status(200).send(p_sdung);
 }
 async function emptyRoom(req, res) {
     var day = req.params;
     day = day.day.replace(/-/g, "/");
-    const phong = await dataEmptyRoom(day, req, res);
+    const phong = await dataEmptyRoom(day, res);
     res.status(200).send(phong);
 }
 async function statusRoom(req, res) {
     var day = req.params;
     day = day.day.replace(/-/g, "/");
-    const data = await dataStatusRoom(day, req, res);
+    const data = await dataStatusRoom(day, res);
     res.status(200).send(data);
 }
 
-function dataUseRoom(day, req, res) {
+function dataUseRoom(day, res) {
     const data = new Promise(tv => {
         const query = "select * from tkb";
         cn.query(query, (err, results) => {
@@ -59,13 +59,13 @@ function dataUseRoom(day, req, res) {
     })
     return data;
 }
-function dataEmptyRoom(day, req, res) {
+function dataEmptyRoom(day, res) {
     const data = new Promise(tv => {
         const query = "select * from phong";
         cn.query(query, async (err, results) => {
             if (err) return res.status(400).send(err.message);
             const phong = results;
-            const tkb = await dataUseRoom(day, req, res);
+            const tkb = await dataUseRoom(day, res);
             const stringJson = JSON.stringify(tkb);
             phong.forEach((element, i) => {
                 if(stringJson.indexOf(element.t_phong)!== -1){
@@ -89,7 +89,7 @@ async function dataStatusRoom(day, req, res) {
     const data = await new Promise(tv => {
         const query = "select * from phong";
         cn.query(query, (err, result) => {
-            if (err) throw err
+            if (err) return res.status(400).send(err.message);
             tv(result);
         });
     });
