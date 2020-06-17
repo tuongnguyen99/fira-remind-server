@@ -63,10 +63,6 @@ async function queryUsermh() {
         console.log(pass);
         const sql = `INSERT INTO user (username, password, password_status, access_token, refresh_token, expiry_date, type) VALUES ('${m_gvien}', '${pass}', '0', NULL, NULL, NULL, 'TEACHER')`;
         query.push(sql);
-        // con.query(sql, (err)=>{
-        //     if(err) throw err
-        //     console.log("ok")
-        // })
     })
     return query;
 }
