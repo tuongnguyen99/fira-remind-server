@@ -5,10 +5,17 @@ const PATCH_TKB = process.env.PATCH_GV || '../upload/tkb.xlsx';
 const PATCH_CONVERT = process.env.PATCH_GV || '../upload/convert.xls';
 
 convertToOjectGv = (opject) => {
+  var phai;
+    if(opject.__EMPTY_3 === "N"){
+        phai = "Nữ";
+    }else{
+        phai = "Nam"
+    }
   return {
     m_gvien: opject.msgv,
     ten: opject.__EMPTY + ' ' + opject.__EMPTY_1,
     n_sinh: cvtToDateStr(opject.__EMPTY_2),
+    phai:phai,
     khoa: opject.__EMPTY_4,
     t_do: opject.__EMPTY_5,
   };

@@ -27,7 +27,7 @@ function roomUse(req, res) {
                 const ngay_kt = new Date(element.n_kthuc);
                 if (ngay_bd < ht && ht <= ngay_kt && element.thu == dayMap[ht.getDay()]) {
                     var abc = {
-                        phong: element.phong,
+                        t_phong: element.phong,
                         t_mon: element.t_mon,
                         t_bdau: element.t_bdau,
                         t_kthuc: element.t_bdau + element.s_tiet
@@ -97,7 +97,7 @@ function emptyRoom(req, res){
 // testt = async ()=>{
 //     const a = await test("2019/10/1");
 //     console.log(a);
-// }
+// }dlasldlsakdlkasdlkskldlasdasdjdfhsdafhj
 // emptyRoom()
 
 module.exports = {
