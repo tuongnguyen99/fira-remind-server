@@ -20,6 +20,10 @@ const login = function login(req, res) {
     if (err) return res.status(400).send(err.message);
 
     const user = results[0];
+    if (user && type === 'STUDENT') {
+      return res.send(cvtToResponse(user));
+    }
+
     if (!user || !compare(password, user.password) || user.type !== type)
       return res.status(404).send({ message: 'user not found' });
     res.send(cvtToResponse(user));
