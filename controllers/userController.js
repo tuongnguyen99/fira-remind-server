@@ -8,8 +8,7 @@ const cvtToResponse = (user) => {
     username: user.username,
     type: user.type,
     passwordChanged: user.password_status,
-    hasAccessToken: user.access_token ? 1 : 0,
-    hasRefreshToken: user.refresh_token ? 1 : 0,
+    hasToken: user.access_token ? 1 : 0,
   });
 };
 
@@ -29,5 +28,17 @@ const login = function login(req, res) {
     res.send(cvtToResponse(user));
   });
 };
-
-module.exports = login;
+function setToken(req, res){
+  const {id, access_token, refresh_token, expiry_date} = req.body;
+  const query = `UPDATE user SET access_token='${access_token}', refresh_token='${refresh_token}', expiry_date='${expiry_date}' WHERE id=${id};`
+  console.log(query);
+  cn.query(query, (err)=>{
+    if(err) return res.status(400).send(err.message);
+    res.send({
+      message:"update complete"
+    })
+  })
+}
+module.exports = {
+  login, setToken
+};

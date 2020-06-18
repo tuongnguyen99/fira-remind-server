@@ -1,9 +1,9 @@
 const express = require('express');
-const login = require('../controllers/userController');
+const user = require('../controllers/userController');
 const router = express.Router();
 
 router.post('/login', (req, res) => {
-  login(req, res);
+  user.login(req, res);
 });
 router.get('/getInfo', (req, res) => {
   if (req.session.username) {
@@ -11,4 +11,7 @@ router.get('/getInfo', (req, res) => {
   }
   res.send('1');
 });
+router.post('/settoken', (req, res)=>{
+  user.setToken(req, res);
+})
 module.exports = router;
