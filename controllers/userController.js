@@ -24,35 +24,41 @@ const login = function login(req, res) {
       return res.send(cvtToResponse(user));
     }
 
-    if (!user || !compare(password, user.password) || user.type !== type)
+    if (
+      !user ||
+      !user.password ||
+      !compare(password, user.password) ||
+      user.type !== type
+    )
       return res.status(404).send({ message: 'user not found' });
     res.send(cvtToResponse(user));
   });
 };
-async function setToken(req, res){
-  const {id, username, access_token, refresh_token, expiry_date} = req.body;
-  const query = `UPDATE user SET access_token='${access_token}', refresh_token='${refresh_token}', expiry_date='${expiry_date}' WHERE id=${id};`
-  cn.query(query, (err)=>{
-    if(err) return res.status(400).send(err.message);
+async function setToken(req, res) {
+  const { id, username, access_token, refresh_token, expiry_date } = req.body;
+  const query = `UPDATE user SET access_token='${access_token}', refresh_token='${refresh_token}', expiry_date='${expiry_date}' WHERE id=${id};`;
+  cn.query(query, (err) => {
+    if (err) return res.status(400).send(err.message);
     res.send({
-      message:"update complete"
-    })
-  })
-  const m_gv = new Promise(tv=>{
-    cn.query(`SELECT * FROM user WHERE id=${id} LIMIT 1`, (err, result)=>{
-      if(err) return res.status(400).send(err.message);
+      message: 'update complete',
+    });
+  });
+  const m_gv = new Promise((tv) => {
+    cn.query(`SELECT * FROM user WHERE id=${id} LIMIT 1`, (err, result) => {
+      if (err) return res.status(400).send(err.message);
       tv(result[0].username);
-    })
-  })
-  const ms= await m_gv;
+    });
+  });
+  const ms = await m_gv;
   const data = {
-    m_gv : ms,
-    access_token:access_token,
-    refresh_token:refresh_token,
-    expiry_date:expiry_date
-  }
+    m_gv: ms,
+    access_token: access_token,
+    refresh_token: refresh_token,
+    expiry_date: expiry_date,
+  };
   gcalendar(data);
 }
 module.exports = {
-  login, setToken
+  login,
+  setToken,
 };
