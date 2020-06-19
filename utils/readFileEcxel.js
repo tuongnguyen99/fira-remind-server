@@ -136,11 +136,33 @@ mon = (t_mon, m_mon)=>{
     m_mon:m_mon
   }
 }
+gientkbOpject = (opject)=>{
+  return {
+    m_gvien: opject.m_gvien,
+    thu: opject.thu,
+    phong: opject.phong,
+    m_mon: opject.m_mon,
+    t_mon: opject.t_mon,
+    t_bdau:opject.t_bdau,
+    s_tiet:opject.s_tiet,
+    n_bdau: opject.n_bdau,
+    n_kthuc: opject.n_kthuc
+  }
+}
+tkb_gvien = ()=>{
+  const data = data_tkb();
+  const tkb_gvien = new Array();
+  data.forEach(element=>{
+    tkb_gvien.push(gientkbOpject(element));
+  })
+  return tkb_gvien;
+}
 // console.log(typeof(data_phong()[0]))
-console.log(data_tkb());
+// console.log(tkb_gvien());
 // data_Mon()
 module.exports = {
   data_gv: data_gv,
   data_tkb: data_tkb,
   data_phong: data_phong,
+  tkb_gvien: tkb_gvien
 };
