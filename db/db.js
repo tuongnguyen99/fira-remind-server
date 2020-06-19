@@ -5,8 +5,8 @@ const HOST = process.env.FIRA_DB_HOST || 'localhost';
 const PASSWORD = process.env.FIRA_DB_PSW || '';
 // const USER = process.env.FIRA_DB_USER || 'reminddb';
 // const HOST = process.env.FIRA_DB_HOST || 'db4free.net';
-const DATABASE_NAME = process.env.DATABASE_NAME || 'remind_db';
 // const PASSWORD = process.env.FIRA_DB_PSW || 'reminddb';
+const DATABASE_NAME = process.env.DATABASE_NAME || 'remind_db';
 
 function createConnection(databaseName) {
   return mysql.createConnection({
@@ -16,6 +16,7 @@ function createConnection(databaseName) {
     database: databaseName || DATABASE_NAME,
   });
 }
+
 
 function createConnectionNoDatabase() {
   return mysql.createConnection({

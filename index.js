@@ -6,6 +6,7 @@ const dataRoutes = require('./routes/dataRoute');
 const roomRoute = require('./routes/roomRoutes');
 const userRoutes = require('./routes/userRoutes');
 const session = require('express-session');
+const changePassword = require('./routes/changePasswordRoute');
 
 var bodyParser = require('body-parser');
 
@@ -24,6 +25,7 @@ app.use('/upload', uploadRoutes);
 app.use('/data', dataRoutes);
 app.use('/room', roomRoute);
 app.use('/user', userRoutes);
+app.use('/changpass', changePassword);
 
 
 app.listen(PORT, () => {

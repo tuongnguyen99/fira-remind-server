@@ -1,6 +1,5 @@
 const { createConnection } = require('../db/db');
-const DATABASE = process.env.DATABASENAME || 'remind_db'
-const cn = createConnection(DATABASE);
+const cn = createConnection();
 
 
 function listRoom(req, res){

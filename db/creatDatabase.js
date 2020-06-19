@@ -37,7 +37,7 @@ function importValue() {
         var sql = "INSERT INTO tkb (thu, t_bdau, s_tiet, m_mon, t_mon, m_gvien, phong, lop, n_bdau, n_kthuc) VALUES ('"
             + element.thu + "', '" + element.t_bdau + "', '"
             + element.s_tiet + "', '" + element.m_mon + "', '"
-            + element.t_mon + "', '" + element.m_gv + "', '"
+            + element.t_mon + "', '" + element.m_gvien + "', '"
             + element.phong + "', '" + element.lop + "', '"
             + element.n_bdau + "', '" + element.n_kthuc + "')";
         con.query(sql, (err, result) => {
