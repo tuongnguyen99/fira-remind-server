@@ -2,11 +2,13 @@ const { createConnection } = require('../db/db');
 const { compare } = require('../utils/cryptographer');
 const cn = createConnection();
 const gcalendar = require('../g-calendar/index');
+const emaill = require('../utils/email');
 
 const cvtToResponse = (user) => {
   return (response = {
     id: user.id,
     username: user.username,
+    email: emaill.cvtNameToEmail(user.t_gvien, '@bdu.edu.vn'),
     type: user.type,
     passwordChanged: user.password_status,
     hasToken: user.access_token ? 1 : 0,
@@ -15,7 +17,7 @@ const cvtToResponse = (user) => {
 
 const login = function login(req, res) {
   const { username, password, type } = req.body;
-  const query = `SELECT * FROM USER WHERE USERNAME = '${username}' LIMIT 1`;
+  const query = `SELECT g_vien.t_gvien, user.id, user.username, user.password, user.password_status, user.access_token, user.refresh_token, user.expiry_date, user.type FROM g_vien, user WHERE user.username = g_vien.m_gvien AND user.username = '${username}'`;
   cn.query(query, (err, results) => {
     if (err) return res.status(400).send(err.message);
 

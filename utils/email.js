@@ -7,8 +7,10 @@ function cvtAccents(str){
 function cvtNameToEmail(name, domain){
   const nameNoAccents = cvtAccents(name);
   const words = nameNoAccents.split(' ');
-  
   return words.map((w, i) => {
     return i === (words.length-1)? w : w[0];
   }).join('').toLowerCase() + domain;
 }
+module.exports = {
+  cvtNameToEmail
+};
