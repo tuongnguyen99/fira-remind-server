@@ -5,6 +5,7 @@ const { createConnection } = require('./db');
 const { text } = require('body-parser');
 const DATABASE = process.env.DATABASENAME || 'remind_db'
 const con = db.createConnection(DATABASE);
+const moment = require('moment');
 
 function creatDatabase(name) {
     const pool = db.createConnectionNoDatabase();
@@ -74,6 +75,45 @@ async function queryUsermh() {
     })
     return query;
 }
+opjectTkbGvien = (opject, ngay) => {
+    return {
+        m_gvien: opject.m_gvien,
+        thu: opject.thu,
+        m_mon: opject.m_mon,
+        t_mon: opject.t_mon,
+        t_bdau: opject.t_bdau,
+        s_tiet: opject.s_tiet,
+        ngay: ngay,
+        t_thai: "Học"
+    }
+}
+function tkbgv() {
+    const dl = data.tkb_gvien()
+    var n_bdau, n_kthuc, thu;
+    const dayMap = {
+        2:1,
+        3:2,
+        4:3,
+        5:4,
+        6:5,
+        7:6,
+        8:0,
+    }
+    const tkb_gvien = new Array();
+    dl.forEach(element => {
+        n_bdau = new Date(element.n_bdau);
+        n_kthuc = new Date(element.n_kthuc);
+        thu = element.thu;
+        for (var m = moment(n_bdau); m.diff(n_kthuc, 'days') <= 0; m.add(1, 'days')) {
+            const day = new Date(m.format('YYYY-MM-DD'));
+            if (day.getDay() === dayMap[thu]) {
+                var ngay = `${day.getFullYear()}/${day.getMonth() + 1}/${day.getDate()}`
+                tkb_gvien.push(opjectTkbGvien(element, ngay))
+            }
+        }
+    })
+    return tkb_gvien;
+}
 function database() {
     const a = queryUsermh();
     //await creatDatabase(DATABASE);
@@ -95,49 +135,8 @@ function database() {
         })
     })
 }
-opjectTkbGvien = (opject, ngay)=>{
-    return{
-        m_gvien: opject.m_gvien,
-        thu: opject.thu,
-        m_mon: opject.m_mon,
-        t_mon: opject.t_mon,
-        t_bdau: opject.t_bdau,
-        s_tiet: opject.s_tiet,
-        ngay: ngay,
-        t_thai:"Học"
-    }
-}
-function tkbgv() {
-    const dl = data.tkb_gvien()
-    var n_bdau, n_kthuc, thu;
-    const dayMap = {
-        2:1,
-        3:2,
-        4:3,
-        5:4,
-        6:5,
-        7:6,
-        8:0,
-    }
-    const tkb_gvien = new Array();
-    dl.forEach(element => {
-        n_bdau = new Date(element.n_bdau);
-        n_kthuc = new Date(element.n_kthuc);
-        thu = element.thu;
-        for (var i = n_bdau.getMonth() + 1; i <= n_kthuc.getMonth() + 1; i++) {
-            for (var j = n_bdau.getDate(); j <= n_kthuc.getDate(); j++) {
-                const day = new Date(`2019/'${i}'/'${j}'`)
-                //console.log(day);
-                if(day.getDay()===dayMap[element.thu]){
-                    var ngay = `${day.getFullYear()}/${day.getMonth()}/${day.getDate()}`
-                    tkb_gvien.push(opjectTkbGvien(element,ngay))
-                }
-            }
-        }
-    })
-    // const test = new Date('2019-11-09T17:00:00.000Z');
-    return tkb_gvien;
-}
+
 // importValue()
 database()
+// tkbgv();
 module.exports = database;
