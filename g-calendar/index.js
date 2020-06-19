@@ -22,7 +22,7 @@ function authorize(credentials, token, callback) {
     token_type: "Bearer",
     expiry_date: token.expiry_date
   })
-  callback(oAuth2Client);
+  callback(oAuth2Client, token);
   // fs.readFile(TOKEN_PATH, (err, token) => {
   //   if (err) return getAccessToken(oAuth2Client, callback);
   //   oAuth2Client.setCredentials(JSON.parse(token));
@@ -55,7 +55,7 @@ function getAccessToken(oAuth2Client, callback) {
   });
 }
 
-function pushEvents(auth) {
+function pushEvents(auth, token) {
   console.log("asdasdas")
   const calendar = google.calendar({ version: 'v3', auth });
 
@@ -98,7 +98,7 @@ function pushEvents(auth) {
 
 
 
-  axios.get('http://localhost:6000/api/schedule/17050070').then((res) => {
+  axios.get(`https://bdu-api-tkb.herokuapp.com/api/schedule/${token.m_gv}`).then((res) => {
     const { data } = res;
     const schedule = data.schedule;
     schedule.map((s) => {
