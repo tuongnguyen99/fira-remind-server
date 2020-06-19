@@ -25,7 +25,7 @@ app.use('/upload', uploadRoutes);
 app.use('/data', dataRoutes);
 app.use('/room', roomRoute);
 app.use('/user', userRoutes);
-app.use('/changpass', changePassword);
+app.use('/changepass', changePassword);
 
 
 app.listen(PORT, () => {

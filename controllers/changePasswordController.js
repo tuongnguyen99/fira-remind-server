@@ -29,7 +29,7 @@ async function changPassword(req, res) {
         })
     } else {
         console.log("chay");
-        const query = `UPDATE user SET password='${mh.hash(newpassword)}' WHERE id=${id}`;
+        const query = `UPDATE user SET password='${mh.hash(newpassword)}', password_status=1 WHERE id=${id}`;
         console.log(query);
         cn.query(query, (err) => {
             if (err) return res.status(400).send(err.message);

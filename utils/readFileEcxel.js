@@ -6,16 +6,16 @@ const PATCH_CONVERT = process.env.PATCH_GV || '../upload/convert.xls';
 
 convertToOjectGv = (opject) => {
   var phai;
-    if(opject.__EMPTY_3 === "N"){
-        phai = "Nữ";
-    }else{
-        phai = "Nam"
-    }
+  if (opject.__EMPTY_3 === "N") {
+    phai = "Nữ";
+  } else {
+    phai = "Nam"
+  }
   return {
     m_gvien: opject.msgv,
     ten: opject.__EMPTY + ' ' + opject.__EMPTY_1,
     n_sinh: cvtToDateStr(opject.__EMPTY_2),
-    phai:phai,
+    phai: phai,
     khoa: opject.__EMPTY_4,
     t_do: opject.__EMPTY_5,
   };
@@ -130,9 +130,15 @@ data_phong = () => {
   }, []);
   return data_phong;
 };
+mon = (t_mon, m_mon)=>{
+  return{
+    t_mon:t_mon,
+    m_mon:m_mon
+  }
+}
 // console.log(typeof(data_phong()[0]))
-// console.log(data_gv());
-
+console.log(data_tkb());
+// data_Mon()
 module.exports = {
   data_gv: data_gv,
   data_tkb: data_tkb,
