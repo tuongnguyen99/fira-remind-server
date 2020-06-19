@@ -17,4 +17,6 @@ function cvtNameToEmail(name, domain) {
       .toLowerCase() + domain
   );
 }
-module.exports = cvtNameToEmail;
+module.exports = {
+  cvtNameToEmail
+};
