@@ -95,7 +95,6 @@ async function dataStatusRoom(day, req, res) {
     var statusInRoom = new Array();
     const empty = await dataEmptyRoom(day, req, res);
     const stringJson = JSON.stringify(empty);
-    console.log(stringJson)
     data.forEach((element, i) => {
         var st;
         if(stringJson.indexOf(element.t_phong)!== -1){

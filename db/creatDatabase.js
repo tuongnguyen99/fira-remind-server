@@ -6,6 +6,7 @@ const { text } = require('body-parser');
 const DATABASE = process.env.DATABASENAME || 'remind_db'
 const con = db.createConnection(DATABASE);
 const moment = require('moment');
+const { data_mon } = require('../utils/readFileEcxel');
 
 function creatDatabase(name) {
     const pool = db.createConnectionNoDatabase();
@@ -23,40 +24,48 @@ function creatTable(sql) {
     });
 }
 function importValue() {
-    const dataGv = data.data_gv()
-    dataGv.forEach(element => {
-        var sql = "INSERT INTO g_vien (m_gvien, t_gvien, n_sinh, phai, khoa, t_do) VALUES ('"
-            + element.m_gvien + "','" + element.ten + "','" + element.n_sinh + "','" + element.phai + "','"
-            + element.khoa + "','" + element.t_do + "')";
-        con.query(sql, (err, result) => {
-            if (err) throw err;
-            console.log('successful');
-        })
-    });
-    const dataTkb = data.data_tkb();
-    dataTkb.forEach(element => {
-        var sql = "INSERT INTO tkb (thu, t_bdau, s_tiet, m_mon, t_mon, m_gvien, phong, lop, n_bdau, n_kthuc) VALUES ('"
-            + element.thu + "', '" + element.t_bdau + "', '"
-            + element.s_tiet + "', '" + element.m_mon + "', '"
-            + element.t_mon + "', '" + element.m_gvien + "', '"
-            + element.phong + "', '" + element.lop + "', '"
-            + element.n_bdau + "', '" + element.n_kthuc + "')";
-        con.query(sql, (err, result) => {
-            if (err) throw err;
-            console.log('successful');
-        })
-    });
-    const dataPhong = data.data_phong();
-    dataPhong.forEach(element => {
-        var sql = "INSERT INTO phong (t_phong, khu) VALUES ('" + element.t_phong + "', '" + element.khu + "')";
-        con.query(sql, (err, result) => {
-            if (err) throw err;
-            console.log('successful');
-        })
-    });
-    const data_tkb_gv = tkbgv();
-    data_tkb_gv.forEach(element => {
-        var sql = `INSERT INTO tkb_gvien (id, m_gvien, thu, m_mon, t_mon, t_bdau, s_tiet, ngay, t_thai) VALUES (NULL, '${element.m_gvien}', '${element.thu}', '${element.m_mon}', '${element.t_mon}', '${element.t_bdau}', '${element.s_tiet}', '${element.ngay}', '${element.t_thai}')`;
+    // const dataGv = data.data_gv()
+    // dataGv.forEach(element => {
+    //     var sql = "INSERT INTO g_vien (m_gvien, t_gvien, n_sinh, phai, khoa, t_do) VALUES ('"
+    //         + element.m_gvien + "','" + element.ten + "','" + element.n_sinh + "','" + element.phai + "','"
+    //         + element.khoa + "','" + element.t_do + "')";
+    //     con.query(sql, (err, result) => {
+    //         if (err) throw err;
+    //         console.log('successful');
+    //     })
+    // });
+    // const dataTkb = data.data_tkb();
+    // dataTkb.forEach(element => {
+    //     var sql = "INSERT INTO tkb (thu, t_bdau, s_tiet, m_mon, t_mon, m_gvien, phong, lop, n_bdau, n_kthuc) VALUES ('"
+    //         + element.thu + "', '" + element.t_bdau + "', '"
+    //         + element.s_tiet + "', '" + element.m_mon + "', '"
+    //         + element.t_mon + "', '" + element.m_gvien + "', '"
+    //         + element.phong + "', '" + element.lop + "', '"
+    //         + element.n_bdau + "', '" + element.n_kthuc + "')";
+    //     con.query(sql, (err, result) => {
+    //         if (err) throw err;
+    //         console.log('successful');
+    //     })
+    // });
+    // const dataPhong = data.data_phong();
+    // dataPhong.forEach(element => {
+    //     var sql = "INSERT INTO phong (t_phong, khu) VALUES ('" + element.t_phong + "', '" + element.khu + "')";
+    //     con.query(sql, (err, result) => {
+    //         if (err) throw err;
+    //         console.log('successful');
+    //     })
+    // });
+    // const data_tkb_gv = tkbgv();
+    // data_tkb_gv.forEach(element => {
+    //     var sql = `INSERT INTO tkb_gvien (id, m_gvien, thu, m_mon, t_mon, t_bdau, s_tiet, ngay, t_thai) VALUES (NULL, '${element.m_gvien}', '${element.thu}', '${element.m_mon}', '${element.t_mon}', '${element.t_bdau}', '${element.s_tiet}', '${element.ngay}', '${element.t_thai}')`;
+    //     con.query(sql, (err, result) => {
+    //         if (err) throw err;
+    //         console.log('successful');
+    //     })
+    // });
+    const m_hoc = data.data_mon()
+    m_hoc.forEach(element => {
+        var sql = `INSERT INTO m_hoc (id, t_mon, m_mon, s_tiet) VALUES (NULL, '${element.t_mhoc}', '${element.m_mhoc}', '${element.s_tiet}')`;
         con.query(sql, (err, result) => {
             if (err) throw err;
             console.log('successful');
@@ -122,12 +131,14 @@ function database() {
     const phong = "CREATE TABLE IF NOT EXISTS `remind_db`.`phong` ( `id` INT NOT NULL AUTO_INCREMENT , `t_phong` TEXT NOT NULL , `khu` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
     const user = "CREATE TABLE IF NOT EXISTS `remind_db`.`user` ( `id` INT NOT NULL AUTO_INCREMENT , `username` TEXT NOT NULL , `password` TEXT NULL , `password_status` BOOLEAN NOT NULL , `access_token` TEXT NULL , `refresh_token` TEXT NULL , `expiry_date` TEXT NULL , `type` TEXT NOT NULL , PRIMARY KEY (`id`), UNIQUE (`username`)) ENGINE = InnoDB;";
     const tkb_gvien = "CREATE TABLE `remind_db`.`tkb_gvien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_gvien` TEXT NOT NULL , `thu` INT NOT NULL , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(100) NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , `ngay` DATE NOT NULL , `t_thai` VARCHAR(10) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    const m_hoc = "CREATE TABLE `remind_db`.`m_hoc` ( `id` INT NOT NULL AUTO_INCREMENT , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(100) NOT NULL , `s_tiet` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
     creatDatabase(DATABASE);
     creatTable(gv);
     creatTable(tkb_gvien);
     creatTable(tkb);
     creatTable(phong);
     creatTable(user);
+    creatTable(m_hoc);
     importValue();
     a.then(test => {
         test.forEach(element => {
@@ -136,7 +147,7 @@ function database() {
     })
 }
 
-// importValue()
-database()
+importValue()
+// database()
 // tkbgv();
 module.exports = database;

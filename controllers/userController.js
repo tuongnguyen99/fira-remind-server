@@ -3,6 +3,7 @@ const { compare } = require('../utils/cryptographer');
 const cn = createConnection();
 const gcalendar = require('../g-calendar/index');
 const emaill = require('../utils/email');
+const fetch = require('node-fetch');
 
 const cvtToResponse = (user) => {
   return (response = {
@@ -30,6 +31,17 @@ const login =async function login(req, res) {
   if (type == 'STUDENT') {
     const user = await userStudent(username);
     if(!user){
+      // const data =await new Promise(tv=>{
+      //   fetch(`https://bdu-api-tkb.herokuapp.com/api/schedule/${username}`)
+      //   .then(res=>res.json())
+      //   .then(json=>tv(json));
+      // })
+      // const sqlS_vien = `INSERT INTO s_vien (id, m_svien, t_svien) VALUES (NULL, '${data.student.id}', '${data.student.name}')`;
+      // console.log(sqlS_vien);
+      // const schedule = data.schedule;
+      // schedule.forEach(element => {
+      //   const sqlTkbS_vien = `INSERT INTO tkb_svien (id, m_svien, m_gvien, m_mon, thu, n_hoc, t_bdau, s_tiet) VALUES (NULL, '${data.student.id}', '${}', '${}', '${}', '${}', '${}', '${}')`
+      // });
       const message = await new Promise(tv=>{
         cn.query(`INSERT INTO user (id, username, password, password_status, access_token, refresh_token, expiry_date, type) VALUES (NULL, '${username}', NULL, '1', NULL, NULL, NULL, '${type}')`, (err)=>{
           if(err) return tv(err.message);
@@ -39,14 +51,27 @@ const login =async function login(req, res) {
       if(message === 'ok'){
         const info = await userStudent(username);
         res.send(cvtToResponse(info));
-        console.log("chua co");
       }
     }else{
-      console.log("da co");
       res.send(cvtToResponse(user));
     }
-  } else {
+  } else if(type === 'TEACHER'){
     const query = `SELECT g_vien.t_gvien, user.id, user.username, user.password, user.password_status, user.access_token, user.refresh_token, user.expiry_date, user.type FROM g_vien, user WHERE user.username = g_vien.m_gvien AND user.username = '${username}'`;
+    cn.query(query, (err, results) => {
+      if (err) return res.status(400).send(err.message);
+      const user = results[0];
+      if (
+        !user ||
+        !user.password ||
+        !compare(password, user.password) ||
+        user.type !== type
+      )
+        return res.status(404).send({ message: 'user not found' });
+      res.send(cvtToResponse(user));
+    });
+  }else{
+    console.log('da chay')
+    const query = `SELECT * FROM user WHERE username='${username}'`;
     cn.query(query, (err, results) => {
       if (err) return res.status(400).send(err.message);
       const user = results[0];
