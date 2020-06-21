@@ -137,6 +137,7 @@ function database() {
     const m_hoc = "CREATE TABLE `remind_db`.`m_hoc` ( `id` INT NOT NULL AUTO_INCREMENT , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(100) NOT NULL , `s_tiet` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
     const s_vien = "CREATE TABLE `remind_db`.`s_vien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_svien` TEXT NOT NULL , `t_svien` VARCHAR(50) NOT NULL , PRIMARY KEY (`id`), UNIQUE (`m_svien`)) ENGINE = InnoDB;";
     const tkb_svien = "CREATE TABLE `remind_db`.`tkb_svien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_svien` TEXT NOT NULL , `m_gvien` TEXT NOT NULL , `m_mon` TEXT NOT NULL , `lop` TEXT NOT NULL, `thu` INT NOT NULL , `n_hoc` DATE NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    const thanhtra = "CREATE TABLE `remind_db`.`thanhtra` ( `id` INT NOT NULL AUTO_INCREMENT , `m_ttra` TEXT NOT NULL , `giovipham` TEXT NOT NULL , `sisothucte` INT NOT NULL , `gv_botiet` BOOLEAN NOT NULL , `gv_ditre` BOOLEAN NOT NULL , `gv_nghisom` BOOLEAN NOT NULL , `gv_saiten` BOOLEAN NOT NULL , `gv_daykhongthongbao` BOOLEAN NOT NULL , `chitiet` VARCHAR(1000) NOT NULL , `id_tkb` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
     creatDatabase(DATABASE);
     creatTable(gv);
     creatTable(tkb_gvien);
@@ -146,6 +147,7 @@ function database() {
     creatTable(m_hoc);
     creatTable(s_vien);
     creatTable(tkb_svien)
+    creatDatabase(thanhtra);
     importValue();
     a.then(test => {
         test.forEach(element => {
