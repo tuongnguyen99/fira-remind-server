@@ -16,46 +16,36 @@ const cvtToResponse = (user) => {
   });
 };
 
-function userStudent(username){
+function userStudent(username, req, res) {
   return new Promise(tv => {
     const query = `SELECT * FROM user WHERE username='${username}'`;
-    cn.query(query, (err, results)=>{
-      if(err) return res.status(400).send(err.message);
+    cn.query(query, (err, results) => {
+      if (err) return res.status(400).send(err.message);
       tv(results[0]);
     })
   })
 }
 
-const login =async function login(req, res) {
+const login = async function login(req, res) {
   const { username, password, type } = req.body;
   if (type == 'STUDENT') {
-    const user = await userStudent(username);
-    if(!user){
-      // const data =await new Promise(tv=>{
-      //   fetch(`https://bdu-api-tkb.herokuapp.com/api/schedule/${username}`)
-      //   .then(res=>res.json())
-      //   .then(json=>tv(json));
-      // })
-      // const sqlS_vien = `INSERT INTO s_vien (id, m_svien, t_svien) VALUES (NULL, '${data.student.id}', '${data.student.name}')`;
-      // console.log(sqlS_vien);
-      // const schedule = data.schedule;
-      // schedule.forEach(element => {
-      //   const sqlTkbS_vien = `INSERT INTO tkb_svien (id, m_svien, m_gvien, m_mon, thu, n_hoc, t_bdau, s_tiet) VALUES (NULL, '${data.student.id}', '${}', '${}', '${}', '${}', '${}', '${}')`
-      // });
-      const message = await new Promise(tv=>{
-        cn.query(`INSERT INTO user (id, username, password, password_status, access_token, refresh_token, expiry_date, type) VALUES (NULL, '${username}', NULL, '1', NULL, NULL, NULL, '${type}')`, (err)=>{
-          if(err) return tv(err.message);
-          tv('ok');
+    const user = await userStudent(username, req, res);
+    if (!user) {
+      //dataApi(username, res);//chi hoat dong khi co tkb moi
+        const message = await new Promise(tv=>{
+          cn.query(`INSERT INTO user (id, username, password, password_status, access_token, refresh_token, expiry_date, type) VALUES (NULL, '${username}', NULL, '1', NULL, NULL, NULL, '${type}')`, (err)=>{
+            if(err) return tv(err.message);
+            tv('ok');
+          })
         })
-      })
-      if(message === 'ok'){
-        const info = await userStudent(username);
-        res.send(cvtToResponse(info));
-      }
-    }else{
-      res.send(cvtToResponse(user));
+        if(message === 'ok'){
+          const info = await userStudent(username);
+          res.send(cvtToResponse(info));
+        }
+      }else{
+        res.send(cvtToResponse(user));
     }
-  } else if(type === 'TEACHER'){
+  } else if (type === 'TEACHER') {
     const query = `SELECT g_vien.t_gvien, user.id, user.username, user.password, user.password_status, user.access_token, user.refresh_token, user.expiry_date, user.type FROM g_vien, user WHERE user.username = g_vien.m_gvien AND user.username = '${username}'`;
     cn.query(query, (err, results) => {
       if (err) return res.status(400).send(err.message);
@@ -69,7 +59,7 @@ const login =async function login(req, res) {
         return res.status(404).send({ message: 'user not found' });
       res.send(cvtToResponse(user));
     });
-  }else{
+  } else {
     console.log('da chay')
     const query = `SELECT * FROM user WHERE username='${username}'`;
     cn.query(query, (err, results) => {
@@ -110,6 +100,42 @@ async function setToken(req, res) {
   };
   gcalendar(data);
 }
+
+async function dataApi(username, res) {
+  const data = await new Promise(tv => {
+    fetch(`https://bdu-api-tkb.herokuapp.com/api/schedule/${username}`)
+      .then(res => res.json())
+      .then(json => tv(json));
+  })
+  const sqlS_vien = `INSERT INTO s_vien (id, m_svien, t_svien) VALUES (NULL, '${data.student.id}', '${data.student.name}')`;
+  cn.query(sqlS_vien, err=>{
+    if(err) return res.status(400).send(err.message);
+  })
+  const schedule = data.schedule;
+  schedule.forEach(async element => {
+    const m_mon = element.subjectCode.split(' ')[0]
+    var day = new Date(element.date);
+    day = `${day.getFullYear()}/${day.getMonth()}/${day.getDate()}`
+    const m_gvien = await msGv(element.class, m_mon);
+    const mapDay={"Thứ Hai":2,"Thứ Ba":3,"Thứ Tư":4, "Thứ Năm":5,"Thứ Sau":6, 'Thứ Bảy':7, 'Chủ Nhật':8}
+    const sqlTkbS_vien = `INSERT INTO tkb_svien (id, m_svien, m_gvien, m_mon, lop, thu, n_hoc, t_bdau, s_tiet) VALUES (NULL, '${data.student.id}', '${m_gvien}', '${m_mon}', '${element.class}', '${mapDay[element.weekDay]}', '${day}', '${element.startSlot}', '${element.numbersOfSlots}')`
+    cn.query(sqlTkbS_vien, err=>{
+      if(err) return res.status(400).send(err.message);
+    })
+  });
+}
+
+function msGv(lop, m_mon) {
+  return new Promise(tv=>{
+    // const query = `SELECT * FROM tkb_gvien WHERE lop='${lop}' AND m_mon='${m_mon}'`;
+    const query = `SELECT * FROM tkb_gvien WHERE lop='${lop}' AND m_mon='${m_mon}'`;
+    cn.query(query, (err, results) => {
+      if (err) throw res.status(400).send(err.message);
+      tv(results[0].m_gvien);
+    })
+  })
+}
+
 module.exports = {
   login,
   setToken,

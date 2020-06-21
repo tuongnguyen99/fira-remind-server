@@ -142,6 +142,7 @@ mon = (t_mon, m_mon) => {
 gientkbOpject = (opject) => {
   return {
     m_gvien: opject.m_gvien,
+    lop: opject.lop,
     thu: opject.thu,
     phong: opject.phong,
     m_mon: opject.m_mon,
