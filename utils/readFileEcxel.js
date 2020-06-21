@@ -49,6 +49,7 @@ convertToOjectTkb = (opject) => {
     s_tiet: opject.f_sotiet,
     m_mon: opject.f_mamh,
     t_mon: opject.f_tenmhvn,
+    s_so: opject.f_sisoctgh,
     m_gvien: ma_gv,
     phong: opject.f_tenph,
     lop: opject.f_malp,
@@ -143,6 +144,7 @@ gientkbOpject = (opject) => {
   return {
     m_gvien: opject.m_gvien,
     lop: opject.lop,
+    s_so: opject.s_so,
     thu: opject.thu,
     phong: opject.phong,
     m_mon: opject.m_mon,

@@ -57,7 +57,7 @@ function importValue() {
     });
     const data_tkb_gv = tkbgv();
     data_tkb_gv.forEach(element => {
-        var sql = `INSERT INTO tkb_gvien (id, m_gvien, lop, thu, m_mon, t_mon, t_bdau, s_tiet, ngay, t_thai) VALUES (NULL, '${element.m_gvien}', '${element.lop}', '${element.thu}', '${element.m_mon}', '${element.t_mon}', '${element.t_bdau}', '${element.s_tiet}', '${element.ngay}', '${element.t_thai}')`;
+        var sql = `INSERT INTO tkb_gvien (id, m_gvien, lop, phong, s_so, thu, m_mon, t_mon, t_bdau, s_tiet, ngay, t_thai) VALUES (NULL, '${element.m_gvien}', '${element.lop}', '${element.phong}', '${element.s_so}', '${element.thu}', '${element.m_mon}', '${element.t_mon}', '${element.t_bdau}', '${element.s_tiet}', '${element.ngay}', '${element.t_thai}')`;
         con.query(sql, (err, result) => {
             if (err) throw err;
             console.log('successful');
@@ -88,6 +88,8 @@ opjectTkbGvien = (opject, ngay) => {
     return {
         m_gvien: opject.m_gvien,
         lop: opject.lop,
+        phong: opject.phong,
+        s_so: opject.s_so,
         thu: opject.thu,
         m_mon: opject.m_mon,
         t_mon: opject.t_mon,
@@ -131,7 +133,7 @@ function database() {
     const tkb = "CREATE TABLE IF NOT EXISTS `remind_db`.`tkb` ( `id` INT NOT NULL AUTO_INCREMENT , `thu` INT NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(50) NOT NULL , `m_gvien` TEXT NOT NULL , `phong` TEXT NOT NULL , `lop` TEXT NOT NULL , `n_bdau` DATE NOT NULL , `n_kthuc` DATE NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
     const phong = "CREATE TABLE IF NOT EXISTS `remind_db`.`phong` ( `id` INT NOT NULL AUTO_INCREMENT , `t_phong` TEXT NOT NULL , `khu` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
     const user = "CREATE TABLE IF NOT EXISTS `remind_db`.`user` ( `id` INT NOT NULL AUTO_INCREMENT , `username` TEXT NOT NULL , `password` TEXT NULL , `password_status` BOOLEAN NOT NULL , `access_token` TEXT NULL , `refresh_token` TEXT NULL , `expiry_date` TEXT NULL , `type` TEXT NOT NULL , PRIMARY KEY (`id`), UNIQUE (`username`)) ENGINE = InnoDB;";
-    const tkb_gvien = "CREATE TABLE `remind_db`.`tkb_gvien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_gvien` TEXT NOT NULL , `lop` TEXT NOT NULL, `thu` INT NOT NULL , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(100) NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , `ngay` DATE NOT NULL , `t_thai` VARCHAR(10) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    const tkb_gvien = "CREATE TABLE `remind_db`.`tkb_gvien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_gvien` TEXT NOT NULL , `lop` TEXT NOT NULL, `phong` TEXT NOT NULL, `s_so` INT NOT NULL, `thu` INT NOT NULL , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(100) NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , `ngay` DATE NOT NULL , `t_thai` VARCHAR(10) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
     const m_hoc = "CREATE TABLE `remind_db`.`m_hoc` ( `id` INT NOT NULL AUTO_INCREMENT , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(100) NOT NULL , `s_tiet` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
     const s_vien = "CREATE TABLE `remind_db`.`s_vien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_svien` TEXT NOT NULL , `t_svien` VARCHAR(50) NOT NULL , PRIMARY KEY (`id`), UNIQUE (`m_svien`)) ENGINE = InnoDB;";
     const tkb_svien = "CREATE TABLE `remind_db`.`tkb_svien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_svien` TEXT NOT NULL , `m_gvien` TEXT NOT NULL , `m_mon` TEXT NOT NULL , `lop` TEXT NOT NULL, `thu` INT NOT NULL , `n_hoc` DATE NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";

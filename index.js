@@ -8,6 +8,7 @@ const userRoutes = require('./routes/userRoutes');
 const session = require('express-session');
 const changePassword = require('./routes/changePasswordRoute');
 const teacher = require('./routes/teacherRoute');
+const inspect = require('./routes/inspectRoute');
 
 var bodyParser = require('body-parser');
 
@@ -30,6 +31,7 @@ app.use('/room', roomRoute);
 app.use('/user', userRoutes);
 app.use('/changepass', changePassword);
 app.use('/teacher', teacher);
+app.use('/inspect', inspect);
 
 app.listen(PORT, () => {
   console.log(`app listening on port ${PORT}`);
