@@ -31,7 +31,7 @@ const login = async function login(req, res) {
   if (type == 'STUDENT') {
     const user = await userStudent(username, req, res);
     if (!user) {
-      //dataApi(username, res);//chi hoat dong khi co tkb moi
+      dataApi(username, res);//chi hoat dong khi co tkb moi
         const message = await new Promise(tv=>{
           cn.query(`INSERT INTO user (id, username, password, password_status, access_token, refresh_token, expiry_date, type) VALUES (NULL, '${username}', NULL, '1', NULL, NULL, NULL, '${type}')`, (err)=>{
             if(err) return tv(err.message);
