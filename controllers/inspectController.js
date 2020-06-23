@@ -23,7 +23,7 @@ function evaluate(req, res) {
     const cvt = {
         true: 1, false: 0
     }
-    const query = `UPDATE thanhtra SET m_ttra='${data.ms_thanhtra}', giovipham='${data.giovipham}', sisothucte='${data.sisothucte}', gv_botiet='${cvt[data.gv_botiet]}', gv_ditre='${cvt[data.gv_ditre]}', gv_nghisom='${cvt[data.gv_nghisom]}', gv_saiten='${cvt[data.gv_saiten]}', gv_daykhongthongbao='${cvt[data.gv_daykhongthongbao]}', nghihoc='${cvt[data.nghihoc]}', chitiet='${data.chitiet}' WHERE id_tkb='${data.id_tkb}'`;
+    const query = `UPDATE thanhtra SET m_ttra='${data.m_ttra}', giovipham='${data.giovipham}', sisothucte='${data.sisothucte}', gv_botiet='${cvt[data.gv_botiet]}', gv_ditre='${cvt[data.gv_ditre]}', gv_nghisom='${cvt[data.gv_nghisom]}', gv_saiten='${cvt[data.gv_saiten]}', gv_daykhongthongbao='${cvt[data.gv_daykhongthongbao]}', nghihoc='${cvt[data.nghihoc]}', chitiet='${data.chitiet}' WHERE id_tkb='${data.id_tkb}'`;
     cn.query(query, err => {
         if (err) return res.status(400).send(err.message);
         res.send({
