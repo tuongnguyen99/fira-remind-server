@@ -23,7 +23,7 @@ function creatTable(sql) {
         console.log("complete");
     });
 }
-function importValue() {
+async function importValue() {
     const dataGv = data.data_gv()
     dataGv.forEach(element => {
         var sql = "INSERT INTO g_vien (m_gvien, t_gvien, n_sinh, phai, khoa, t_do) VALUES ('"
@@ -71,6 +71,14 @@ function importValue() {
             console.log('successful');
         })
     });
+    const idTkb = await getIdTkbGv()
+    idTkb.forEach(element => {
+        var sql = `INSERT INTO thanhtra (id, m_ttra, giovipham, sisothucte, gv_botiet, gv_ditre, gv_nghisom, gv_saiten, gv_daykhongthongbao, chitiet, id_tkb) VALUES (NULL, NULL, NULL, NULL, '0', '0', '0', '0', '0', NULL, '${element}')`
+        con.query(sql, (err, result) => {
+            if (err) throw err;
+            console.log('successful');
+        })
+    })
 }
 async function queryUsermh() {
     const dataGv = data.data_gv()
@@ -103,13 +111,13 @@ function tkbgv() {
     const dl = data.tkb_gvien()
     var n_bdau, n_kthuc, thu;
     const dayMap = {
-        2:1,
-        3:2,
-        4:3,
-        5:4,
-        6:5,
-        7:6,
-        8:0,
+        2: 1,
+        3: 2,
+        4: 3,
+        5: 4,
+        6: 5,
+        7: 6,
+        8: 0,
     }
     const tkb_gvien = new Array();
     dl.forEach(element => {
@@ -126,6 +134,19 @@ function tkbgv() {
     })
     return tkb_gvien;
 }
+async function getIdTkbGv() {
+    const sql = `SELECT id FROM tkb_gvien`;
+    const data = await new Promise(tv => {
+        con.query(sql, (err, results) => {
+            tv(results);
+        })
+    })
+    const id = new Array();
+    data.forEach(element => {
+        id.push(element.id);
+    })
+    return id;
+}
 function database() {
     const a = queryUsermh();
     //await creatDatabase(DATABASE);
@@ -137,7 +158,7 @@ function database() {
     const m_hoc = "CREATE TABLE IF NOT EXISTS `remind_db`.`m_hoc` ( `id` INT NOT NULL AUTO_INCREMENT , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(100) NOT NULL , `s_tiet` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
     const s_vien = "CREATE TABLE IF NOT EXISTS `remind_db`.`s_vien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_svien` TEXT NOT NULL , `t_svien` VARCHAR(50) NOT NULL , PRIMARY KEY (`id`), UNIQUE (`m_svien`)) ENGINE = InnoDB;";
     const tkb_svien = "CREATE TABLE IF NOT EXISTS `remind_db`.`tkb_svien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_svien` TEXT NOT NULL , `m_gvien` TEXT NOT NULL , `m_mon` TEXT NOT NULL , `lop` TEXT NOT NULL, `thu` INT NOT NULL , `n_hoc` DATE NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
-    const thanhtra = "CREATE TABLE IF NOT EXISTS `remind_db`.`thanhtra` ( `id` INT NOT NULL AUTO_INCREMENT , `m_ttra` TEXT NOT NULL , `giovipham` TEXT NOT NULL , `sisothucte` INT NOT NULL , `gv_botiet` BOOLEAN NOT NULL , `gv_ditre` BOOLEAN NOT NULL , `gv_nghisom` BOOLEAN NOT NULL , `gv_saiten` BOOLEAN NOT NULL , `gv_daykhongthongbao` BOOLEAN NOT NULL , `chitiet` VARCHAR(1000) NOT NULL , `id_tkb` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    const thanhtra = "CREATE TABLE IF NOT EXISTS `remind_db`.`thanhtra` ( `id` INT NOT NULL AUTO_INCREMENT , `m_ttra` TEXT NULL , `giovipham` TEXT NULL , `sisothucte` INT NULL , `gv_botiet` BOOLEAN NOT NULL , `gv_ditre` BOOLEAN NOT NULL , `gv_nghisom` BOOLEAN NOT NULL , `gv_saiten` BOOLEAN NOT NULL , `gv_daykhongthongbao` BOOLEAN NOT NULL , `chitiet` VARCHAR(1000) NULL , `id_tkb` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
     // creatDatabase(DATABASE);
     creatTable(gv);
     creatTable(tkb_gvien);
