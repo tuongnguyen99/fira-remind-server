@@ -23,7 +23,7 @@ function evaluate(req, res) {
     const cvt = {
         true: 1, false: 0
     }
-    const query = `INSERT INTO thanhtra (id, m_ttra, giovipham, sisothucte, gv_botiet, gv_ditre, gv_nghisom, gv_saiten, gv_daykhongthongbao, chitiet, id_tkb) VALUES (NULL, '${data.ms_thanhtra}', '${data.giovipham}', '${data.sisothucte}', '${cvt[data.gv_botiet]}', '${cvt[data.gv_ditre]}', '${cvt[data.gv_nghisom]}', '${cvt[data.gv_saiten]}', '${cvt[data.gv_daykhongbao]}', '${data.chitiet}', '${data.id_tkb}')`;
+    const query = `UPDATE thanhtra SET m_ttra='${data.ms_thanhtra}', giovipham='${data.giovipham}', sisothucte='${data.sisothucte}', gv_botiet='${cvt[data.gv_botiet]}', gv_ditre='${cvt[data.gv_ditre]}', gv_nghisom='${cvt[data.gv_nghisom]}', gv_saiten='${cvt[data.gv_saiten]}', gv_daykhongthongbao='${cvt[data.gv_daykhongthongbao]}', nghihoc='${cvt[data.nghihoc]}', chitiet='${data.chitiet}' WHERE id_tkb='${data.id_tkb}'`
     cn.query(query, err => {
         if (err) return res.status(400).send(err.message);
         res.send({
@@ -45,6 +45,7 @@ cvtToEvaluate = (opject) => {
         gv_nghisom: cvt[opject.gv_nghisom],
         gv_saiten: cvt[opject.gv_saiten],
         gv_daykhongthongbao: cvt[opject.gv_daykhongthongbao],
+        nghihoc: cvt[opject.nghihoc],
         chitiet: opject.chitiet,
         id_tkb: opject.id_tkb,
         m_gvien: opject.m_gvien,
@@ -52,28 +53,46 @@ cvtToEvaluate = (opject) => {
         phong: opject.phong,
         s_so: opject.s_so,
         thu: opject.thu,
-        m_mon: opject.m_mon,
+        m_mon: opject.m_mon ,
+        t_moc:opject.t_mon,
         t_bdau: opject.t_bdau,
         s_tiet: opject.s_tiet,
         t_thai: opject.t_thai
     }
 }
-async function getEvaluate(req, res) {
-    const id_tkb = req.params.id_tkb;
-    const query = `SELECT * FROM thanhtra WHERE id_tkb='${id_tkb}'`;
-    const data = await new Promise(tv => {
-        cn.query(query, (err, results) => {
-            if (err) return res.status(400).send(err.message);
-            tv(results);
-        })
-    })
-    const dl = new Array();
-    data.forEach(element => {
-        dl.push(cvtToEvaluate(element));
-    });
-    res.send(dl);
+// async function getEvaluate(req, res) {
+//     const id_tkb = req.params.id_tkb;
+//     const query = `SELECT * FROM thanhtra WHERE id_tkb='${id_tkb}'`;
+//     const data = await new Promise(tv => {
+//         cn.query(query, (err, results) => {
+//             if (err) return res.status(400).send(err.message);
+//             tv(results);
+//         })
+//     })
+//     const dl = new Array();
+//     data.forEach(element => {
+//         dl.push(cvtToEvaluate(element));
+//     });
+//     res.send(dl);
+// }
+
+cvtReportNh = (opject)=>{
+    return{
+        thu:opject,
+        t_bdau:opject,
+        s_tiet:opject,
+        phong:opject,
+        lop:opject,
+        s_so:opject,
+        sisothucte:opject,
+        t_mhoc:opject,
+        t_gvien:opject,
+        ngay:opject,
+        chitiet:opject,
+        nghihoc:opject
+    }
 }
 
 module.exports = {
-    list, evaluate, getEvaluate
+    list, evaluate
 }

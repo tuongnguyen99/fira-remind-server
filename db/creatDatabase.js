@@ -73,7 +73,7 @@ async function importValue() {
     });
     const idTkb = await getIdTkbGv()
     idTkb.forEach(element => {
-        var sql = `INSERT INTO thanhtra (id, m_ttra, giovipham, sisothucte, gv_botiet, gv_ditre, gv_nghisom, gv_saiten, gv_daykhongthongbao, chitiet, id_tkb) VALUES (NULL, NULL, NULL, NULL, '0', '0', '0', '0', '0', NULL, '${element}')`
+        var sql = `INSERT INTO thanhtra (id, m_ttra, giovipham, sisothucte, gv_botiet, gv_ditre, gv_nghisom, gv_saiten, gv_daykhongthongbao,nghihoc, chitiet, id_tkb) VALUES (NULL, NULL, NULL, NULL, '0', '0', '0', '0', '0','0', NULL, '${element}')`
         con.query(sql, (err, result) => {
             if (err) throw err;
             console.log('successful');
@@ -158,7 +158,7 @@ function database() {
     const m_hoc = "CREATE TABLE IF NOT EXISTS `remind_db`.`m_hoc` ( `id` INT NOT NULL AUTO_INCREMENT , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(100) NOT NULL , `s_tiet` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
     const s_vien = "CREATE TABLE IF NOT EXISTS `remind_db`.`s_vien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_svien` TEXT NOT NULL , `t_svien` VARCHAR(50) NOT NULL , PRIMARY KEY (`id`), UNIQUE (`m_svien`)) ENGINE = InnoDB;";
     const tkb_svien = "CREATE TABLE IF NOT EXISTS `remind_db`.`tkb_svien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_svien` TEXT NOT NULL , `m_gvien` TEXT NOT NULL , `m_mon` TEXT NOT NULL , `lop` TEXT NOT NULL, `thu` INT NOT NULL , `n_hoc` DATE NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
-    const thanhtra = "CREATE TABLE IF NOT EXISTS `remind_db`.`thanhtra` ( `id` INT NOT NULL AUTO_INCREMENT , `m_ttra` TEXT NULL , `giovipham` TEXT NULL , `sisothucte` INT NULL , `gv_botiet` BOOLEAN NOT NULL , `gv_ditre` BOOLEAN NOT NULL , `gv_nghisom` BOOLEAN NOT NULL , `gv_saiten` BOOLEAN NOT NULL , `gv_daykhongthongbao` BOOLEAN NOT NULL , `chitiet` VARCHAR(1000) NULL , `id_tkb` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    const thanhtra = "CREATE TABLE IF NOT EXISTS `remind_db`.`thanhtra` ( `id` INT NOT NULL AUTO_INCREMENT , `m_ttra` TEXT NULL , `giovipham` TEXT NULL , `sisothucte` INT NULL , `gv_botiet` BOOLEAN NOT NULL , `gv_ditre` BOOLEAN NOT NULL , `gv_nghisom` BOOLEAN NOT NULL , `gv_saiten` BOOLEAN NOT NULL , `gv_daykhongthongbao` BOOLEAN NOT NULL, `nghihoc` BOOLEAN NOT NULL , `chitiet` VARCHAR(1000) NULL , `id_tkb` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
     // creatDatabase(DATABASE);
     creatTable(gv);
     creatTable(tkb_gvien);
