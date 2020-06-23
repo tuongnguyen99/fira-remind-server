@@ -4,11 +4,18 @@ const cn = db.createConnection();
 
 async function list(req, res) {
     const day = req.params;
-    const query = `SELECT * FROM tkb_gvien WHERE ngay='${day.day}'`
-    cn.query(query, (err, results) => {
-        if (err) return res.status(400).send(err.message);
-        res.send(results);
+    const query = `SELECT * FROM thanhtra, tkb_gvien WHERE thanhtra.id_tkb = tkb_gvien.id AND tkb_gvien.ngay='${day.day}'`
+    const netData = await new Promise(tv=>{
+        cn.query(query, (err, results) => {
+            if (err) return res.status(400).send(err.message);
+            tv(results);
+        })
     })
+    const dl = new Array();
+    netData.forEach(element => {
+        dl.push(cvtToEvaluate(element));
+    });
+    res.send(dl);
 }
 
 function evaluate(req, res) {
@@ -39,7 +46,16 @@ cvtToEvaluate = (opject) => {
         gv_saiten: cvt[opject.gv_saiten],
         gv_daykhongthongbao: cvt[opject.gv_daykhongthongbao],
         chitiet: opject.chitiet,
-        id_tkb: opject.id_tkb
+        id_tkb: opject.id_tkb,
+        m_gvien: opject.m_gvien,
+        lop: opject.lop,
+        phong: opject.phong,
+        s_so: opject.s_so,
+        thu: opject.thu,
+        m_mon: opject.m_mon,
+        t_bdau: opject.t_bdau,
+        s_tiet: opject.s_tiet,
+        t_thai: opject.t_thai
     }
 }
 async function getEvaluate(req, res) {

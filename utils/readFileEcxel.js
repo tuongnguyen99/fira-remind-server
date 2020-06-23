@@ -30,7 +30,7 @@ convertDateMysql = (arry) => {
 };
 convertToOjectTkb = (opject) => {
   var ngay_bd, ngay_kt, ma_gv;
-  if (opject.f_tghoc == null) {
+  if (opject.f_tghoc.length === 0) {
     ngay_bd = '0000-00-00';
     ngay_kt = '0000-00-00';
   } else {
@@ -190,7 +190,8 @@ data_mon = () => {
 };
 
 // console.log(typeof(data_phong()[0]))
-// console.log(tkb_gvien());
+// console.log(data_tkb());
+// data_tkb();
 // data_mon();
 module.exports = {
   data_gv: data_gv,

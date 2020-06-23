@@ -56,7 +56,6 @@ function getAccessToken(oAuth2Client, callback) {
 }
 
 function pushEvents(auth, token) {
-  console.log('asdasdas');
   const calendar = google.calendar({ version: 'v3', auth });
 
   // const startTime = new Date();
@@ -153,7 +152,7 @@ function pushEvents(auth, token) {
     });
 }
 function run(token) {
-  console.log(token);
+  // console.log(token);
   fs.readFile('./g-calendar/credentials.json', (err, content) => {
     if (err) return console.log('Error loading client secret file:', err);
     authorize(JSON.parse(content), token, pushEvents);
