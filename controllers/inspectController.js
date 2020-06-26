@@ -32,9 +32,23 @@ function evaluate(req, res) {
     })
 }
 
-function statistical(req, res){
-    const query = ``
+async function statistical(req, res){
+    const query = `SELECT * FROM thanhtra, tkb_gvien, g_vien WHERE thanhtra.id_tkb = tkb_gvien.id AND tkb_gvien.m_gvien=g_vien.m_gvien AND thanhtra.nghihoc=1`;
+    const statisticalList = await new Promise(tv=>{
+        cn.query(query, (err, results)=>{
+            if(err) return res.status(400).send(err.message);
+            tv(results);
+        })
+    })
+    const weekBegin = await weekStart();
+    const statistical = statisticalList.reduce((arr, element)=>{
+        arr.push(cvtReportNh(element,weekBegin));
+        return arr;
+    }, []);
+    res.send(statistical);
 }
+
+
 
 cvtToEvaluate = (opject) => {
     const cvt = {
@@ -66,40 +80,47 @@ cvtToEvaluate = (opject) => {
         t_thai: opject.t_thai
     }
 }
-// async function getEvaluate(req, res) {
-//     const id_tkb = req.params.id_tkb;
-//     const query = `SELECT * FROM thanhtra WHERE id_tkb='${id_tkb}'`;
-//     const data = await new Promise(tv => {
-//         cn.query(query, (err, results) => {
-//             if (err) return res.status(400).send(err.message);
-//             tv(results);
-//         })
-//     })
-//     const dl = new Array();
-//     data.forEach(element => {
-//         dl.push(cvtToEvaluate(element));
-//     });
-//     res.send(dl);
-// }
 
-cvtReportNh = (opject)=>{
+cvtReportNh = (opject, weekStart)=>{
     return{
-        thu:opject,
-        t_bdau:opject,
-        s_tiet:opject,
-        phong:opject,
-        lop:opject,
-        s_so:opject,
-        sisothucte:opject,
-        t_mhoc:opject,
-        t_gvien:opject,
-        ngay:opject,
-        chitiet:opject,
-        nghihoc:opject
+        thu:opject.thu,
+        t_bdau:opject.t_bdau,
+        s_tiet:opject.s_tiet,
+        phong:opject.phong,
+        lop:opject.lop,
+        s_so:opject.s_so,
+        sisothucte:opject.sisothucte,
+        t_mhoc:opject.t_mon,
+        t_gvien:opject.t_gvien,
+        ngay:opject.ngay,
+        chitiet:opject.chitiet,
+        tuan:opject.tuan-weekStart+1,
+        nghihoc:"NH"
     }
 }
 
-function statistical(req, res){
+// svtSumReport = (object)=>{
+//     return{
+//         tuan:object.tuan,
+//         nghihoc:
+//     }
+// }
+
+async function weekStart(){
+    const sql='SELECT tuan FROM tkb_gvien';
+    const week = await new Promise(tv=>{
+        cn.query(sql, (err, results)=>{
+            if(err) throw err;
+            tv(results);
+        })
+    })
+    var weekBegin = week[0].tuan;
+    week.forEach(element=>{
+        if(weekBegin>element.tuan){
+            weekBegin = element.tuan;
+        }
+    })
+    return weekBegin;
 }
 
 module.exports = {
