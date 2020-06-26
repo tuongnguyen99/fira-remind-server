@@ -60,7 +60,7 @@ cvtToEvaluate = (opject) => {
         s_so: opject.s_so,
         thu: opject.thu,
         m_mon: opject.m_mon ,
-        t_moc:opject.t_mon,
+        t_mon:opject.t_mon,
         t_bdau: opject.t_bdau,
         s_tiet: opject.s_tiet,
         t_thai: opject.t_thai
