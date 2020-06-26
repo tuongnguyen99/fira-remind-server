@@ -65,7 +65,6 @@ const login = async function login(req, res) {
       res.send(cvtToResponse(user));
     });
   } else {
-    console.log('da chay')
     const query = `SELECT * FROM user WHERE username='${username}'`;
     cn.query(query, (err, results) => {
       if (err) return res.status(400).send(err.message);

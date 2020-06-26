@@ -11,4 +11,7 @@ route.get('/evaluate/:id_tkb', (req, res)=>{
 route.post('/evaluate', (req, res)=>{
     inspect.evaluate(req, res);
 })
+route.get('/statistical', (req, res)=>{
+    inspect.statistical(req, res);
+})
 module.exports = route;

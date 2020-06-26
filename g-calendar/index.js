@@ -57,44 +57,6 @@ function getAccessToken(oAuth2Client, callback) {
 
 function pushEvents(auth, token) {
   const calendar = google.calendar({ version: 'v3', auth });
-
-  // const startTime = new Date();
-  // const endTime = new Date();
-
-  // startTime.setHours(7);
-  // endTime.setHours(11);
-
-  // var event = {
-  //   summary: `Tên môn học: ádhfkljasdhdflkhs`,
-  //   location: `Phòng: à}`,
-  //   description: `Tiết bắt đầu:adsf`,
-  //   start: {
-  //     dateTime: startTime,
-  //     timeZone: 'Asia/Ho_Chi_Minh',
-  //   },
-  //   end: {
-  //     dateTime: endTime,
-  //     timeZone: 'Asia/Ho_Chi_Minh',
-  //   }
-  // }
-
-  // calendar.events.insert(
-  //   {
-  //     auth: auth,
-  //     calendarId: 'primary',
-  //     resource: event,
-  //   },
-  //   function (err, event) {
-  //     if (err) {
-  //       console.log(
-  //         'There was an error contacting the Calendar service: ' + err
-  //       );
-  //       return;
-  //     }
-  //     console.log('Event created!');
-  //   }
-  // );
-
   axios
     .get(`https://bdu-api-tkb.herokuapp.com/api/schedule/${token.m_gv}`)
     .then((res) => {

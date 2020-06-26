@@ -1,7 +1,5 @@
 const xlsx = require('xlsx');
 const cvtToDateStr = require('./time');
-const { utc } = require('moment');
-const e = require('cors');
 const PATCH_GV = process.env.PATCH_GV || '../upload/CBGD.xls';
 const PATCH_TKB = process.env.PATCH_GV || '../upload/tkb.xlsx';
 const PATCH_CONVERT = process.env.PATCH_GV || '../upload/convert.xls';
@@ -191,7 +189,6 @@ data_mon = () => {
 
 // console.log(typeof(data_phong()[0]))
 // console.log(data_tkb());
-// data_tkb();
 // data_mon();
 module.exports = {
   data_gv: data_gv,

@@ -4,7 +4,7 @@ const cn = db.createConnection();
 
 async function list(req, res) {
     const day = req.params;
-    const query = `SELECT * FROM thanhtra, tkb_gvien WHERE thanhtra.id_tkb = tkb_gvien.id AND tkb_gvien.ngay='${day.day}'`
+    const query = `SELECT * FROM thanhtra, tkb_gvien, g_vien WHERE thanhtra.id_tkb = tkb_gvien.id AND tkb_gvien.m_gvien=g_vien.m_gvien AND tkb_gvien.ngay='${day.day}'`
     const netData = await new Promise(tv=>{
         cn.query(query, (err, results) => {
             if (err) return res.status(400).send(err.message);
@@ -31,6 +31,11 @@ function evaluate(req, res) {
         })
     })
 }
+
+function statistical(req, res){
+    const query = ``
+}
+
 cvtToEvaluate = (opject) => {
     const cvt = {
         1: true, 0: false
@@ -49,6 +54,7 @@ cvtToEvaluate = (opject) => {
         chitiet: opject.chitiet,
         id_tkb: opject.id_tkb,
         m_gvien: opject.m_gvien,
+        t_gvien: opject.t_gvien,
         lop: opject.lop,
         phong: opject.phong,
         s_so: opject.s_so,
@@ -93,6 +99,9 @@ cvtReportNh = (opject)=>{
     }
 }
 
+function statistical(req, res){
+}
+
 module.exports = {
-    list, evaluate
+    list, evaluate, statistical
 }
