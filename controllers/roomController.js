@@ -125,8 +125,15 @@ async function listEmptyRoom(req, res){
 }
 
 async function arrangeRoom(req, res){
-    const{t_phong, ngay, n_dung, b_sang,b_chieu,b_toi} = req.body;
-    console.log(n_dung);
+    const{t_phong, ngay, m_dich, b_sang,b_chieu,b_toi} = req.body;
+    const cvtTruefalse = {true:1, false:2}
+    const sql = `INSERT INTO p_sdung (id, t_phong, ngay, m_dich, b_sang, b_chieu, b_toi) VALUES (NULL, '${t_phong}', '${ngay}', '${m_dich}', '${cvtTruefalse[b_sang]}', '${cvtTruefalse[b_chieu]}', '${cvtTruefalse[b_toi]}')`;
+    cn.query(sql, err =>{
+        if(err) return res.status(400).send(err.message);
+        res.send({
+            message:"Đặt phòng hoàn tất"
+        })
+    })
 }
 
 async function phongcothedung(req, res) {

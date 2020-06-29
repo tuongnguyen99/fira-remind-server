@@ -158,6 +158,7 @@ function database() {
     const s_vien = "CREATE TABLE IF NOT EXISTS `remind_db`.`s_vien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_svien` TEXT NOT NULL , `t_svien` VARCHAR(50) NOT NULL , PRIMARY KEY (`id`), UNIQUE (`m_svien`)) ENGINE = InnoDB;";
     const tkb_svien = "CREATE TABLE IF NOT EXISTS `remind_db`.`tkb_svien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_svien` TEXT NOT NULL , `m_gvien` TEXT NOT NULL , `m_mon` TEXT NOT NULL , `lop` TEXT NOT NULL, `thu` INT NOT NULL , `n_hoc` DATE NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
     const thanhtra = "CREATE TABLE IF NOT EXISTS `remind_db`.`thanhtra` ( `id` INT NOT NULL AUTO_INCREMENT , `m_ttra` TEXT NULL , `giovipham` TEXT NULL , `sisothucte` INT NULL , `gv_botiet` BOOLEAN NOT NULL , `gv_ditre` BOOLEAN NOT NULL , `gv_nghisom` BOOLEAN NOT NULL , `gv_saiten` BOOLEAN NOT NULL , `gv_daykhongthongbao` BOOLEAN NOT NULL, `nghihoc` BOOLEAN NOT NULL , `chitiet` VARCHAR(1000) NULL , `id_tkb` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    const p_sdung = "CREATE TABLE `remind_db`.`p_sdung` ( `id` INT NOT NULL AUTO_INCREMENT , `t_phong` TEXT NOT NULL , `ngay` INT NOT NULL , `m_dich` VARCHAR(1000) NOT NULL , `b_sang` BOOLEAN NOT NULL , `b_chieu` BOOLEAN NOT NULL , `b_toi` BOOLEAN NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
     // creatDatabase(DATABASE);
     creatTable(gv);
     creatTable(tkb_gvien);
@@ -168,6 +169,7 @@ function database() {
     creatTable(s_vien);
     creatTable(tkb_svien)
     creatTable(thanhtra);
+    creatTable(p_sdung);
     importValue();
     a.then(test => {
         test.forEach(element => {
