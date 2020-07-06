@@ -22,7 +22,11 @@ function authorize(credentials, token, callback) {
     token_type: 'Bearer',
     expiry_date: token.expiry_date,
   });
-  callback(oAuth2Client, token);
+  // callback(oAuth2Client, token);
+  return {
+    oAuth2Client: oAuth2Client,
+    token: token
+  }
   // fs.readFile(TOKEN_PATH, (err, token) => {
   //   if (err) return getAccessToken(oAuth2Client, callback);
   //   oAuth2Client.setCredentials(JSON.parse(token));
@@ -113,11 +117,63 @@ function pushEvents(auth, token) {
       });
     });
 }
+
+function listEvents(auth) {
+  var day = new Date();
+  const sotru = day.getDay() - 1;
+  day.setDate(day.getDate() - sotru);
+  const results = new Promise(tv => {
+    const calendar = google.calendar({ version: 'v3', auth });
+    calendar.events.list({
+      calendarId: 'primary',
+      timeMin: (day).toISOString(),
+      maxResults: 10,
+      singleEvents: true,
+      orderBy: 'startTime',
+    }, (err, res) => {
+      if (err) return console.log('The API returned an error: ' + err);
+      const events = res.data.items;
+      if (events.length) {
+        console.log('Upcoming 10 events:');
+        events.map((event, i) => {
+          const start = event.start.dateTime || event.start.date;
+          console.log(`${start} - ${event.summary}`);
+        });
+      } else {
+        tv(false);
+      }
+    });
+  })
+  return results;
+}
+async function checkEvent(token) {
+  var results = await new Promise(tv => {
+    fs.readFile('./g-calendar/credentials.json', async (err, content) => {
+      if (err) return console.log('Error loading client secret file:', err);
+      const author = authorize(JSON.parse(content), token);
+      tv(await listEvents(author.oAuth2Client));
+      // authorize(JSON.parse(content), token, pushEvents);
+    });
+  })
+  console.log(results);
+  if (results === false) {
+    run(token);
+  }
+  else {
+    console.log("da cap nhat");
+  }
+};
+
 function run(token) {
   // console.log(token);
-  fs.readFile('./g-calendar/credentials.json', (err, content) => {
+  fs.readFile('./g-calendar/credentials.json', async (err, content) => {
     if (err) return console.log('Error loading client secret file:', err);
-    authorize(JSON.parse(content), token, pushEvents);
+    const author = await authorize(JSON.parse(content), token);
+    pushEvents(author.oAuth2Client, author.token);
+    // authorize(JSON.parse(content), token, pushEvents);
   });
 }
-module.exports = run;
+
+module.exports = {
+  run, checkEvent
+};

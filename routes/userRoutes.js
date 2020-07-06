@@ -14,4 +14,7 @@ router.get('/getInfo', (req, res) => {
 router.post('/settoken', (req, res)=>{
   user.setToken(req, res);
 })
+router.get('/checkevent/:id', (req, res)=>{
+  user.checkEventTheWeek(req, res);
+})
 module.exports = router;

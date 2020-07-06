@@ -4,6 +4,7 @@ const cn = createConnection();
 const gcalendar = require('../g-calendar/index');
 const emaill = require('../utils/email');
 const fetch = require('node-fetch');
+const { checkEvent } = require('../g-calendar/index');
 
 const cvtToResponse = (user) => {
   return (response = {
@@ -32,7 +33,7 @@ const login = async function login(req, res) {
     const user = await userStudent(username, req, res);
     if (!user) {
       const message = await dataApi(username, res);//chi hoat dong khi co tkb moi
-      if(message.message==="ok"){
+      if (message.message === "ok") {
         const message = await new Promise(tv => {
           cn.query(`INSERT INTO user (id, username, password, password_status, access_token, refresh_token, expiry_date, type) VALUES (NULL, '${username}', NULL, '1', NULL, NULL, NULL, '${type}')`, (err) => {
             if (err) return tv(err.message);
@@ -44,15 +45,16 @@ const login = async function login(req, res) {
           res.send(cvtToResponse(info));
         }
       }
-      else{
-        res.send(404).send({message: "user not found"});
+      else {
+        res.send(404).send({ message: "user not found" });
       }
     } else {
+      await checkEventTheWeek(user.id);
       res.send(cvtToResponse(user));
     }
   } else if (type === 'TEACHER') {
     const query = `SELECT g_vien.t_gvien, user.id, user.username, user.password, user.password_status, user.access_token, user.refresh_token, user.expiry_date, user.type FROM g_vien, user WHERE user.username = g_vien.m_gvien AND user.username = '${username}'`;
-    cn.query(query, (err, results) => {
+    cn.query(query,async (err, results) => {
       if (err) return res.status(400).send(err.message);
       const user = results[0];
       if (
@@ -62,6 +64,7 @@ const login = async function login(req, res) {
         user.type !== type
       )
         return res.status(404).send({ message: 'user not found' });
+      await checkEventTheWeek(user.id);
       res.send(cvtToResponse(user));
     });
   } else {
@@ -80,8 +83,26 @@ const login = async function login(req, res) {
     });
   }
 };
+
+async function checkEventTheWeek(id) {
+  console.log(id);
+  const query = `SELECT * FROM user WHERE id='${id} LIMIT 1'`;
+  const token = await new Promise(tv => {
+    cn.query(query, (err, results) => {
+      if (err) return res.status(400).send(err.message);
+      tv(results[0]);
+    })
+  })
+  const data = {
+    m_gv: token.username,
+    access_token: token.access_token,
+    refresh_token: token.refresh_token,
+    expiry_date: token.expiry_date,
+  };
+  gcalendar.checkEvent(data)
+}
 async function setToken(req, res) {
-  const { id, username, access_token, refresh_token, expiry_date } = req.body;
+  const { id, username, access_token, refresh_token, } = req.body;
   const query = `UPDATE user SET access_token='${access_token}', refresh_token='${refresh_token}', expiry_date='${expiry_date}' WHERE id=${id};`;
   cn.query(query, (err) => {
     if (err) return res.status(400).send(err.message);
@@ -102,7 +123,7 @@ async function setToken(req, res) {
     refresh_token: refresh_token,
     expiry_date: expiry_date,
   };
-  gcalendar(data);
+  gcalendar.run(data);
 }
 
 async function dataApi(username, res) {
@@ -111,7 +132,7 @@ async function dataApi(username, res) {
       .then(res => res.json())
       .then(json => tv(json));
   })
-  if(data.error === undefined){
+  if (data.error === undefined) {
 
     const sqlS_vien = `INSERT INTO s_vien (id, m_svien, t_svien) VALUES (NULL, '${data.student.id}', '${data.student.name}')`;
     cn.query(sqlS_vien, err => {
@@ -129,10 +150,10 @@ async function dataApi(username, res) {
         if (err) return res.status(400).send(err.message);
       })
     });
-    return {message:"ok"}
+    return { message: "ok" }
   }
-  else{
-    return {message:"Không tồn tại người này"};
+  else {
+    return { message: "Không tồn tại người này" };
   }
 }
 
@@ -157,4 +178,5 @@ function msGv(lop, m_mon) {
 module.exports = {
   login,
   setToken,
+  checkEventTheWeek
 };
