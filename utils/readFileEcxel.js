@@ -1,8 +1,8 @@
 const xlsx = require('xlsx');
 const cvtToDateStr = require('./time');
-const PATCH_GV = process.env.PATCH_GV || '../upload/CBGD.xls';
-const PATCH_TKB = process.env.PATCH_GV || '../upload/tkb.xlsx';
-const PATCH_CONVERT = process.env.PATCH_GV || '../upload/convert.xls';
+const PATCH_GV = process.env.PATCH_GV || './upload/CBGD.xls';
+const PATCH_TKB = process.env.PATCH_GV || './upload/tkb.xlsx';
+const PATCH_CONVERT = process.env.PATCH_GV || './upload/convert.xls';
 
 convertToOjectGv = (opject) => {
   var phai;

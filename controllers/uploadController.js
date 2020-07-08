@@ -1,4 +1,5 @@
 const multer = require('multer');
+const database = require('../db/creatDatabase');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -9,7 +10,7 @@ const storage = multer.diskStorage({
   },
 });
 
-module.exports = function uploadFiles(req, res) {
+function uploadFiles(req, res) {
   const upload = multer({ storage }).array('file', 2);
   upload(req, res, (err) => {
     if (err instanceof multer.MulterError) {
@@ -20,3 +21,11 @@ module.exports = function uploadFiles(req, res) {
     res.send('ok');
   });
 };
+
+function creatDatabase(){
+  database();
+}
+
+module.exports = {
+  uploadFiles, creatDatabase
+}
