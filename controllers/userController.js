@@ -102,7 +102,7 @@ async function checkEventTheWeek(id) {
   gcalendar.checkEvent(data)
 }
 async function setToken(req, res) {
-  const { id, username, access_token, refresh_token, } = req.body;
+  const { id, username, access_token, refresh_token, expiry_date} = req.body;
   const query = `UPDATE user SET access_token='${access_token}', refresh_token='${refresh_token}', expiry_date='${expiry_date}' WHERE id=${id};`;
   cn.query(query, (err) => {
     if (err) return res.status(400).send(err.message);

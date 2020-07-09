@@ -125,9 +125,10 @@ async function listEmptyRoom(req, res){
 }
 
 async function arrangeRoom(req, res){
-    const{t_phong, ngay, m_dich, b_sang,b_chieu,b_toi} = req.body;
-    const cvtTruefalse = {true:1, false:2}
-    const sql = `INSERT INTO p_sdung (id, t_phong, ngay, m_dich, b_sang, b_chieu, b_toi) VALUES (NULL, '${t_phong}', '${ngay}', '${m_dich}', '${cvtTruefalse[b_sang]}', '${cvtTruefalse[b_chieu]}', '${cvtTruefalse[b_toi]}')`;
+    const{t_phong, ngay, n_dung, b_sang,b_chieu,b_toi} = req.body;
+    
+    const cvtTruefalse = {true:1, false:0}
+    const sql = `INSERT INTO p_sdung (id, t_phong, ngay, m_dich, b_sang, b_chieu, b_toi) VALUES (NULL, '${t_phong}', '${ngay}', '${n_dung}', '${cvtTruefalse[b_sang]}', '${cvtTruefalse[b_chieu]}', '${cvtTruefalse[b_toi]}')`;
     cn.query(sql, err =>{
         if(err) return res.status(400).send(err.message);
         res.send({
@@ -142,11 +143,7 @@ async function phongcothedung(req, res) {
     const phongsudung = await dataUseRoom(day, res);
     const phongcothedung = new Array();
     phongsudung.forEach(element => {
-        if (element.b_sang === true && element.b_chieu === true) {
-
-        }else{
-            phongcothedung.push(element);
-        }
+        phongcothedung.push(element);
     })
     phongtrong.forEach(element=>{
         phongcothedung.push(cvtRoom(element, false, false, false));
@@ -166,8 +163,8 @@ async function dataUseRoom(day, res) {
             tv(results)
         })
     })
-    var dataXepPhong = await new Promise(tv => {
-        const query = `SELECT * FROM p_sdung WHERE ngay='${day}'`;
+    const query = `SELECT * FROM p_sdung WHERE ngay='${day}'`;
+    const dataXepPhong = await new Promise(tv => {
         cn.query(query, (err, results) => {
             if (err) return res.status(400).send(err.message);
             tv(results);
@@ -175,12 +172,17 @@ async function dataUseRoom(day, res) {
     })
     var useRoom = new Array();
     dataRoom.forEach(element => {
-        useRoom.push(element.phong)
+        useRoom.push(element.phong);
     })
+    dataXepPhong.forEach(element => {
+        useRoom.push(element.t_phong);
+    });
+
     useRoom = useRoom.filter((item, index) => {
         return useRoom.indexOf(item) === index;
     })
-    const kq = new Array()
+
+    var kethop = new Array()
     useRoom.forEach((element, i) => {
         const m = new Array()
         dataRoom.forEach(el => {
@@ -189,27 +191,74 @@ async function dataUseRoom(day, res) {
             }
         })
         if (m.length === 2) {
-            kq.push(cvtRoom(element, true, true, false));
+            kethop.push(cvtRoom(element, true, true, false));
         } else {
             if (m[0] === 1) {
-                kq.push(cvtRoom(element, true, false, false))
+                kethop.push(cvtRoom(element, true, false, false))
             }
             if (m[0] === 7) {
-                kq.push(cvtRoom(element, false, true, false))
+                kethop.push(cvtRoom(element, false, true, false))
             }
             if (m[0] === 13) {
-                kq.push(cvtRoom(element, false, false, true))
+                kethop.push(cvtRoom(element, false, false, true))
             }
         }
     })
     const mapBoolean = { 1: true, 0: false };
     dataXepPhong.forEach(element => {
-        kq.push(cvtRoom(element.t_phong, mapBoolean[element.b_sang], mapBoolean[element.b_chieu], mapBoolean[element.b_toi]));
+        kethop.push(cvtRoom(element.t_phong, mapBoolean[element.b_sang], mapBoolean[element.b_chieu], mapBoolean[element.b_toi]));
     });
+    const kq = new Array();
+    const tl = new Array();
+    kethop.forEach((element, i) => {
+        let tam = element.t_phong;
+        kethop.forEach((el, j)=>{
+            if(tam === el.t_phong && i !== j){
+                tl.push(el);
+            }
+        })
+    });
+    kethop.forEach((element, i) => {
+        let tam = element.t_phong;
+        kethop.forEach((el, j)=>{
+            if(tam === el.t_phong && i !== j){
+                kethop.splice(j,1);
+                kethop.splice(i,1);
+            }
+        })
+    });
+    tl.forEach((element, i)=>{
+        let tam = element;
+        tl.forEach((el, j)=>{
+            if(tam.t_phong === el.t_phong && i!==j){
+                let sang, chieu, toi;
+                if(tam.b_sang===el.b_sang){
+                    sang = tam.b_sang;
+                }else{
+                    sang = true;
+                }
+                if(tam.b_chieu===el.b_chieu){
+                    chieu = tam.b_chieu;
+                }else{
+                    chieu = true;
+                }
+                if(tam.b_toi===el.b_toi){
+                    toi = tam.b_toi;
+                }else{
+                    toi = true;
+                }
+                kq.push(cvtRoom(tam.t_phong,sang,chieu,toi))
+                tl.splice(j,1);
+            }
+        })
+    })
+    kethop.forEach(el=>{
+        kq.push(el);
+    })
     return kq;
 }
 async function dataEmptyRoom(day, res) {
-    const p_sdung = await dataUseRoom(day, res);
+    const p_sdung = await dataUseRoomGd(day, res);
     const t_phong = new Array();
     p_sdung.forEach(element => {
         t_phong.push(element.t_phong)
