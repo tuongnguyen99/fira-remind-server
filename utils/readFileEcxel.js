@@ -29,8 +29,8 @@ convertDateMysql = (arry) => {
 convertToOjectTkb = (opject) => {
   var ngay_bd, ngay_kt, ma_gv;
   if (opject.f_tghoc.length === 0) {
-    ngay_bd = '0000-00-00';
-    ngay_kt = '0000-00-00';
+    ngay_bd = '1000-01-01';
+    ngay_kt = '1000-01-01';
   } else {
     const date = opject.f_tghoc.split('-');
     ngay_bd = convertDateMysql(date[0]);

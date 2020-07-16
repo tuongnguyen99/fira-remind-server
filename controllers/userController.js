@@ -49,7 +49,7 @@ const login = async function login(req, res) {
         res.send(404).send({ message: "user not found" });
       }
     } else {
-      await checkEventTheWeek(user.id);
+      await checkEventTheWeek(user.id, res);
       res.send(cvtToResponse(user));
     }
   } else if (type === 'TEACHER') {
@@ -64,7 +64,7 @@ const login = async function login(req, res) {
         user.type !== type
       )
         return res.status(404).send({ message: 'user not found' });
-      await checkEventTheWeek(user.id);
+      await checkEventTheWeek(user.id, res);
       res.send(cvtToResponse(user));
     });
   } else {
@@ -84,7 +84,7 @@ const login = async function login(req, res) {
   }
 };
 
-async function checkEventTheWeek(id) {
+async function checkEventTheWeek(id, res) {
   console.log(id);
   const query = `SELECT * FROM user WHERE id='${id} LIMIT 1'`;
   const token = await new Promise(tv => {
@@ -99,7 +99,13 @@ async function checkEventTheWeek(id) {
     refresh_token: token.refresh_token,
     expiry_date: token.expiry_date,
   };
-  gcalendar.checkEvent(data)
+  if(await gcalendar.checkEvent(data) === false){
+    gcalendar.run(data);
+    dataApi(token.username, res);
+  }
+  else{
+
+  }
 }
 async function setToken(req, res) {
   const { id, username, access_token, refresh_token, expiry_date} = req.body;
@@ -135,6 +141,7 @@ async function dataApi(username, res) {
   if (data.error === undefined) {
 
     const sqlS_vien = `INSERT INTO s_vien (id, m_svien, t_svien) VALUES (NULL, '${data.student.id}', '${data.student.name}')`;
+    console.log(sqlS_vien)
     cn.query(sqlS_vien, err => {
       if (err) return res.status(400).send(err.message);
     })

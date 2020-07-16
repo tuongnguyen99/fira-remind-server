@@ -155,12 +155,11 @@ async function checkEvent(token) {
       // authorize(JSON.parse(content), token, pushEvents);
     });
   })
-  console.log(results);
   if (results === false) {
-    run(token);
+    return false;
   }
   else {
-    console.log("da cap nhat");
+    return results;
   }
 };
 

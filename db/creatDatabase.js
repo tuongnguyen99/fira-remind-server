@@ -12,15 +12,15 @@ const cvtToDateStr = require('../utils/time');
 
 function creatDatabase(name) {
     const a = queryUsermh();
-    cn.query("CREATE DATABASE IF NOT EXISTS " + name, (err, result, cb) => {
+    cn.query("CREATE DATABASE IF NOT EXISTS " + name + " CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;", (err, result, cb) => {
         if (err) throw err;
         const gv = "CREATE TABLE IF NOT EXISTS `remind_db`.`g_vien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_gvien` TEXT NOT NULL , `t_gvien` VARCHAR(50) NOT NULL , `n_sinh` TEXT NOT NULL, `phai` VARCHAR(5) NOT NULL, `khoa` VARCHAR(100) NOT NULL , `t_do` VARCHAR(20) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
-        const tkb = "CREATE TABLE IF NOT EXISTS `remind_db`.`tkb` ( `id` INT NOT NULL AUTO_INCREMENT , `thu` INT NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(50) NOT NULL , `m_gvien` TEXT NOT NULL , `phong` TEXT NOT NULL , `lop` TEXT NOT NULL , `n_bdau` DATE NOT NULL , `n_kthuc` DATE NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+        const tkb = "CREATE TABLE IF NOT EXISTS `remind_db`.`tkb` ( `id` INT NOT NULL AUTO_INCREMENT , `thu` INT NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(500) NOT NULL , `m_gvien` TEXT NOT NULL , `phong` TEXT NOT NULL , `lop` TEXT NOT NULL , `n_bdau` DATE NOT NULL , `n_kthuc` DATE NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
         const phong = "CREATE TABLE IF NOT EXISTS `remind_db`.`phong` ( `id` INT NOT NULL AUTO_INCREMENT , `t_phong` TEXT NOT NULL , `khu` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
-        const user = "CREATE TABLE IF NOT EXISTS `remind_db`.`user` ( `id` INT NOT NULL AUTO_INCREMENT , `username` TEXT NOT NULL , `password` TEXT NULL , `password_status` BOOLEAN NOT NULL , `access_token` TEXT NULL , `refresh_token` TEXT NULL , `expiry_date` TEXT NULL , `type` TEXT NOT NULL , PRIMARY KEY (`id`), UNIQUE (`username`)) ENGINE = InnoDB;";
-        const tkb_gvien = "CREATE TABLE IF NOT EXISTS `remind_db`.`tkb_gvien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_gvien` TEXT NOT NULL , `lop` TEXT NOT NULL, `phong` TEXT NOT NULL, `s_so` INT NOT NULL, `thu` INT NOT NULL , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(100) NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , `ngay` DATE NOT NULL , `tuan` INT NOT NULL, `t_thai` VARCHAR(10) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
-        const m_hoc = "CREATE TABLE IF NOT EXISTS `remind_db`.`m_hoc` ( `id` INT NOT NULL AUTO_INCREMENT , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(100) NOT NULL , `s_tiet` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
-        const s_vien = "CREATE TABLE IF NOT EXISTS `remind_db`.`s_vien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_svien` TEXT NOT NULL , `t_svien` VARCHAR(50) NOT NULL , PRIMARY KEY (`id`), UNIQUE (`m_svien`)) ENGINE = InnoDB;";
+        const user = "CREATE TABLE IF NOT EXISTS `remind_db`.`user` ( `id` INT NOT NULL AUTO_INCREMENT , `username` TEXT NOT NULL , `password` TEXT NULL , `password_status` BOOLEAN NOT NULL , `access_token` TEXT NULL , `refresh_token` TEXT NULL , `expiry_date` TEXT NULL , `type` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+        const tkb_gvien = "CREATE TABLE IF NOT EXISTS `remind_db`.`tkb_gvien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_gvien` TEXT NOT NULL , `lop` TEXT NOT NULL, `phong` TEXT NOT NULL, `s_so` INT NOT NULL, `thu` INT NOT NULL , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(500) NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , `ngay` DATE NOT NULL , `tuan` INT NOT NULL, `t_thai` VARCHAR(10) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+        const m_hoc = "CREATE TABLE IF NOT EXISTS `remind_db`.`m_hoc` ( `id` INT NOT NULL AUTO_INCREMENT , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(500) NOT NULL , `s_tiet` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+        const s_vien = "CREATE TABLE IF NOT EXISTS `remind_db`.`s_vien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_svien` TEXT NOT NULL , `t_svien` VARCHAR(50) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
         const tkb_svien = "CREATE TABLE IF NOT EXISTS `remind_db`.`tkb_svien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_svien` TEXT NOT NULL , `m_gvien` TEXT NOT NULL , `m_mon` TEXT NOT NULL , `lop` TEXT NOT NULL, `thu` INT NOT NULL , `n_hoc` DATE NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
         const thanhtra = "CREATE TABLE IF NOT EXISTS `remind_db`.`thanhtra` ( `id` INT NOT NULL AUTO_INCREMENT , `m_ttra` TEXT NULL , `giovipham` TEXT NULL , `sisothucte` INT NULL , `gv_botiet` BOOLEAN NOT NULL , `gv_ditre` BOOLEAN NOT NULL , `gv_nghisom` BOOLEAN NOT NULL , `gv_saiten` BOOLEAN NOT NULL , `gv_daykhongthongbao` BOOLEAN NOT NULL, `nghihoc` BOOLEAN NOT NULL , `chitiet` VARCHAR(1000) NULL , `id_tkb` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
         const p_sdung = "CREATE TABLE IF NOT EXISTS `remind_db`.`p_sdung` ( `id` INT NOT NULL AUTO_INCREMENT , `t_phong` TEXT NOT NULL , `ngay` DATE NOT NULL , `m_dich` VARCHAR(1000) NOT NULL , `b_sang` BOOLEAN NOT NULL , `b_chieu` BOOLEAN NOT NULL , `b_toi` BOOLEAN NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
@@ -41,6 +41,35 @@ function creatDatabase(name) {
             })
         })
     });
+}
+function importData() {
+    const a = queryUsermh();
+    const gv = "CREATE TABLE IF NOT EXISTS `remind_db`.`g_vien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_gvien` TEXT NOT NULL , `t_gvien` VARCHAR(50) NOT NULL , `n_sinh` TEXT NOT NULL, `phai` VARCHAR(5) NOT NULL, `khoa` VARCHAR(100) NOT NULL , `t_do` VARCHAR(20) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;"
+    const tkb = "CREATE TABLE IF NOT EXISTS `remind_db`.`tkb` ( `id` INT NOT NULL AUTO_INCREMENT , `thu` INT NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(500) NOT NULL , `m_gvien` TEXT NOT NULL , `phong` TEXT NOT NULL , `lop` TEXT NOT NULL , `n_bdau` DATE NOT NULL , `n_kthuc` DATE NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    const phong = "CREATE TABLE IF NOT EXISTS `remind_db`.`phong` ( `id` INT NOT NULL AUTO_INCREMENT , `t_phong` TEXT NOT NULL , `khu` TEXT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    const user = "CREATE TABLE IF NOT EXISTS `remind_db`.`user` ( `id` INT NOT NULL AUTO_INCREMENT , `username` TEXT NOT NULL , `password` TEXT NULL , `password_status` BOOLEAN NOT NULL , `access_token` TEXT NULL , `refresh_token` TEXT NULL , `expiry_date` TEXT NULL , `type` TEXT NOT NULL , PRIMARY KEY (`id`), UNIQUE (`username`)) ENGINE = InnoDB;";
+    const tkb_gvien = "CREATE TABLE IF NOT EXISTS `remind_db`.`tkb_gvien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_gvien` TEXT NOT NULL , `lop` TEXT NOT NULL, `phong` TEXT NOT NULL, `s_so` INT NOT NULL, `thu` INT NOT NULL , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(500) NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , `ngay` DATE NOT NULL , `tuan` INT NOT NULL, `t_thai` VARCHAR(10) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    const m_hoc = "CREATE TABLE IF NOT EXISTS `remind_db`.`m_hoc` ( `id` INT NOT NULL AUTO_INCREMENT , `m_mon` TEXT NOT NULL , `t_mon` VARCHAR(500) NOT NULL , `s_tiet` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    const s_vien = "CREATE TABLE IF NOT EXISTS `remind_db`.`s_vien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_svien` TEXT NOT NULL , `t_svien` VARCHAR(100) NOT NULL , PRIMARY KEY (`id`), UNIQUE (`m_svien`)) ENGINE = InnoDB;";
+    const tkb_svien = "CREATE TABLE IF NOT EXISTS `remind_db`.`tkb_svien` ( `id` INT NOT NULL AUTO_INCREMENT , `m_svien` TEXT NOT NULL , `m_gvien` TEXT NOT NULL , `m_mon` TEXT NOT NULL , `lop` TEXT NOT NULL, `thu` INT NOT NULL , `n_hoc` DATE NOT NULL , `t_bdau` INT NOT NULL , `s_tiet` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    const thanhtra = "CREATE TABLE IF NOT EXISTS `remind_db`.`thanhtra` ( `id` INT NOT NULL AUTO_INCREMENT , `m_ttra` TEXT NULL , `giovipham` TEXT NULL , `sisothucte` INT NULL , `gv_botiet` BOOLEAN NOT NULL , `gv_ditre` BOOLEAN NOT NULL , `gv_nghisom` BOOLEAN NOT NULL , `gv_saiten` BOOLEAN NOT NULL , `gv_daykhongthongbao` BOOLEAN NOT NULL, `nghihoc` BOOLEAN NOT NULL , `chitiet` VARCHAR(1000) NULL , `id_tkb` INT NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    const p_sdung = "CREATE TABLE IF NOT EXISTS `remind_db`.`p_sdung` ( `id` INT NOT NULL AUTO_INCREMENT , `t_phong` TEXT NOT NULL , `ngay` DATE NOT NULL , `m_dich` VARCHAR(1000) NOT NULL , `b_sang` BOOLEAN NOT NULL , `b_chieu` BOOLEAN NOT NULL , `b_toi` BOOLEAN NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;";
+    creatTable(gv);
+    creatTable(tkb_gvien);
+    creatTable(tkb);
+    creatTable(phong);
+    creatTable(user);
+    creatTable(m_hoc);
+    creatTable(s_vien);
+    creatTable(tkb_svien)
+    creatTable(thanhtra);
+    creatTable(p_sdung);
+    importValue();
+    a.then(test => {
+        test.forEach(element => {
+            creatTable(element);
+        })
+    })
 }
 function creatTable(sql) {
     con.query(sql, (err, result, cb) => {
@@ -178,4 +207,7 @@ function database() {
 // tkbgv();
 // database();
 // tkbgv();
-module.exports = database;
+module.exports = {
+    database,
+    importData
+};

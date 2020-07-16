@@ -19,8 +19,8 @@ async function statusRoom(req, res) {
 }
 // dữ liệu hiển thị
 
-function dataUseRoomGd(day, res) {
-    const data = new Promise(tv => {
+async function dataUseRoomGd(day, res) {
+    const data = await new Promise(tv => {
         const query = "select * from tkb";
         cn.query(query, (err, results) => {
             if (err) return res.status(400).send(err.message);
@@ -55,7 +55,21 @@ function dataUseRoomGd(day, res) {
             tv(p_sdung);
         })
     })
-    return data;
+    const kq = new Array();
+    const sql = `SELECT * FROM p_sdung WHERE ngay='${day}'`
+    const dataSql = await new Promise(tv=>{
+        cn.query(sql, (err, results)=>{
+            if (err) return res.status(400).send(err.message);
+            tv(results)
+        })
+    })
+    dataSql.forEach(element=>{
+        kq.push(cvtUseRoom(element));
+    })
+    data.forEach(el=>{
+        kq.push(el);
+    })
+    return kq;
 }
 function dataEmptyRoomGD(day, res) {
     const data = new Promise(tv => {
@@ -94,6 +108,24 @@ cvtRoom = (phong, s, c, t,id) => {
         b_toi: t
     }
 }
+
+cvtUseRoom = (object)=>{
+    var t_bdau;
+    if(object.b_sang===1){
+        t_bdau = 1;
+    }
+    else if(object.b_chieu===1){
+        t_bdau = 7;
+    }else{
+        t_bdau = 13;
+    }
+    return{
+        t_phong: object.t_phong,
+        t_mon: object.m_dich,
+        t_bdau: t_bdau,
+        t_kthuc: 6
+    }
+}
 async function dataStatusRoom(day, req, res) {
     const data = await new Promise(tv => {
         const query = "select * from phong";
@@ -126,7 +158,6 @@ async function listEmptyRoom(req, res){
 
 async function arrangeRoom(req, res){
     const{t_phong, ngay, n_dung, b_sang,b_chieu,b_toi} = req.body;
-    
     const cvtTruefalse = {true:1, false:0}
     const sql = `INSERT INTO p_sdung (id, t_phong, ngay, m_dich, b_sang, b_chieu, b_toi) VALUES (NULL, '${t_phong}', '${ngay}', '${n_dung}', '${cvtTruefalse[b_sang]}', '${cvtTruefalse[b_chieu]}', '${cvtTruefalse[b_toi]}')`;
     cn.query(sql, err =>{
