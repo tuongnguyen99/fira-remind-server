@@ -99,6 +99,7 @@ async function checkEventTheWeek(id, res) {
     refresh_token: token.refresh_token,
     expiry_date: token.expiry_date,
   };
+  // console.log(await gcalendar.checkEvent(data))
   if(await gcalendar.checkEvent(data) === false){
     gcalendar.run(data);
     dataApi(token.username, res);
