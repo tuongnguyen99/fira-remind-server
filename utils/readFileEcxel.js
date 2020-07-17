@@ -3,6 +3,9 @@ const cvtToDateStr = require('./time');
 const PATCH_GV = process.env.PATCH_GV || './upload/CBGD.xls';
 const PATCH_TKB = process.env.PATCH_GV || './upload/tkb.xlsx';
 const PATCH_CONVERT = process.env.PATCH_GV || './upload/convert.xls';
+// const PATCH_GV = process.env.PATCH_GV || '../upload/CBGD.xls';
+// const PATCH_TKB = process.env.PATCH_GV || '../upload/tkb.xlsx';
+// const PATCH_CONVERT = process.env.PATCH_GV || '../upload/convert.xls';
 
 convertToOjectGv = (opject) => {
   var phai;
@@ -190,6 +193,7 @@ data_mon = () => {
 // console.log(typeof(data_phong()[0]))
 // console.log(data_tkb());
 // data_mon();
+// console.log(data_tkb())
 module.exports = {
   data_gv: data_gv,
   data_tkb: data_tkb,

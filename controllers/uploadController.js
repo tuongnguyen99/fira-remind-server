@@ -23,7 +23,7 @@ function uploadFiles(req, res) {
 };
 
 function creatDatabase(){
-  database.database();
+  database();
 }
 
 module.exports = {

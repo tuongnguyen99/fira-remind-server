@@ -49,11 +49,24 @@ const login = async function login(req, res) {
         res.send(404).send({ message: "user not found" });
       }
     } else {
-      await checkEventTheWeek(user.id, res);
-      res.send(cvtToResponse(user));
+      await checkEventTheWeek(user.id, res, user);
     }
   } else if (type === 'TEACHER') {
     const query = `SELECT g_vien.t_gvien, user.id, user.username, user.password, user.password_status, user.access_token, user.refresh_token, user.expiry_date, user.type FROM g_vien, user WHERE user.username = g_vien.m_gvien AND user.username = '${username}'`;
+    cn.query(query, async (err, results) => {
+      if (err) return res.status(400).send(err.message);
+      const user = results[0];
+      if (
+        !user ||
+        !user.password ||
+        !compare(password, user.password) ||
+        user.type !== type
+      )
+        return res.status(404).send({ message: 'user not found' });
+      res.send(cvtToResponse(user));
+    });
+  } else {
+    const query = `SELECT * FROM user WHERE username='${username}'`;
     cn.query(query,async (err, results) => {
       if (err) return res.status(400).send(err.message);
       const user = results[0];
@@ -64,28 +77,12 @@ const login = async function login(req, res) {
         user.type !== type
       )
         return res.status(404).send({ message: 'user not found' });
-      await checkEventTheWeek(user.id, res);
-      res.send(cvtToResponse(user));
-    });
-  } else {
-    const query = `SELECT * FROM user WHERE username='${username}'`;
-    cn.query(query, (err, results) => {
-      if (err) return res.status(400).send(err.message);
-      const user = results[0];
-      if (
-        !user ||
-        !user.password ||
-        !compare(password, user.password) ||
-        user.type !== type
-      )
-        return res.status(404).send({ message: 'user not found' });
-      res.send(cvtToResponse(user));
+      await checkEventTheWeek(user.id, res, user);
     });
   }
 };
 
-async function checkEventTheWeek(id, res) {
-  console.log(id);
+async function checkEventTheWeek(id, res, user) {
   const query = `SELECT * FROM user WHERE id='${id} LIMIT 1'`;
   const token = await new Promise(tv => {
     cn.query(query, (err, results) => {
@@ -93,23 +90,27 @@ async function checkEventTheWeek(id, res) {
       tv(results[0]);
     })
   })
-  const data = {
-    m_gv: token.username,
-    access_token: token.access_token,
-    refresh_token: token.refresh_token,
-    expiry_date: token.expiry_date,
-  };
-  // console.log(await gcalendar.checkEvent(data))
-  if(await gcalendar.checkEvent(data) === false){
-    gcalendar.run(data);
-    dataApi(token.username, res);
-  }
-  else{
+  if (!token.access_token) {
+    res.send(cvtToResponse(user));
+  } else {
+    const data = {
+      m_gv: token.username,
+      access_token: token.access_token,
+      refresh_token: token.refresh_token,
+      expiry_date: token.expiry_date,
+    };
+    console.log(await gcalendar.checkEvent(data))
+    if (await gcalendar.checkEvent(data) === false) {
+      gcalendar.run(data);
+      dataApi(token.username, res);
+    }
+    else {
 
+    }
   }
 }
 async function setToken(req, res) {
-  const { id, username, access_token, refresh_token, expiry_date} = req.body;
+  const { id, username, access_token, refresh_token, expiry_date } = req.body;
   const query = `UPDATE user SET access_token='${access_token}', refresh_token='${refresh_token}', expiry_date='${expiry_date}' WHERE id=${id};`;
   cn.query(query, (err) => {
     if (err) return res.status(400).send(err.message);
